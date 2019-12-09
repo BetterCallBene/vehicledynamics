@@ -1,0 +1,4 @@
+loadModel(Modelica);getErrorString();
+loadFile("package.mo");getErrorString();
+// loadFile("suspension.mo");getErrorString();
+// checkModel(vehicle_dynamics.suspension.MacPherson);getErrorString();

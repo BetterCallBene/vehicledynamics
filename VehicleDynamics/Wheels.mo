@@ -21,7 +21,7 @@ package Wheels "Wheel, tyre and road models"
         final parameter Real nShape[3] = if leftWheel then n else -n;
         constant SI.Velocity v_eps = 1.e-10;
         // Modelica.Constants.eps "1/v_eps should be representable on the machine";
-        // GEOMETRIC VARIABLES  
+        // GEOMETRIC VARIABLES
         SI.Angle camberAngle "Angle between wheel plane and contact normal";
         Real cosCamberAngle "Cosine of camber angle";
         SI.Radius Rdym "Distance between wheel center point and contact point";
@@ -71,7 +71,7 @@ package Wheels "Wheel, tyre and road models"
         SI.Torque Wt[3] "Tyre/contact torque at W-frame, resolved in road frame";
         SI.Torque Ct[3] "Tyre torque acting at wheel center, resolved in wheel_body frame";
         SI.Torque Ct_tyre "Tyre torque acting at wheel center in direction of spin axis";
-          // *********************************************************************  
+          // *********************************************************************
         Road road;
         Road road2;
         Real mueRoad;
@@ -81,12 +81,12 @@ package Wheels "Wheel, tyre and road models"
     public 
         // Modify deprecated VehicleDynamics Library
         // For fast development replacement general interface through specific road
-        outer block Road = environments.NoGraphicsRoad;
+        inner block Road = Environments.NoGraphicsRoad;
         replaceable Data wheelData;
         // Modify deprecated VehicleDynamics Library
         // Remove documentation
         // Modify deprecated VehicleDynamics Library
-        // Begin: Move from ModelicaAdditions to Standard Modelica Library 
+        // Begin: Move from ModelicaAdditions to Standard Modelica Library
         Modelica.Mechanics.MultiBody.Forces.WorldForce tyreForceWheelCenter annotation(
             Placement(visible = true, transformation(origin = {-74, -38}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
         Modelica.Mechanics.MultiBody.Forces.WorldTorque tyreTorqueWheelCenter annotation(
@@ -102,6 +102,9 @@ package Wheels "Wheel, tyre and road models"
         Modelica.Mechanics.MultiBody.Parts.Body wheel_body(m = wheelData.m, I_11 = wheelData.Ixx, I_22 = wheelData.Iyy, I_33 = wheelData.Ixx) annotation(
             Placement(visible = true, transformation(origin = {52, 2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
         // Ende
+    protected
+        Real aux1[3] "Auxiliary vector 1 (vector perpendicular to Ce_y and We_z)";
+        Real aux2[3] "Auxiliary vector 2";
     equation 
         road.x = Wr[1];
         road.y = Wr[2];
@@ -314,7 +317,7 @@ package Wheels "Wheel, tyre and road models"
         tyreTorqueWheelCenter.torque = Ct - nn * Ct_tyre;
         drivingTyreTorque.tau = Ct_tyre;
         // Modify deprecated VehicleDynamics Library
-        // Collect all connectors 
+// Collect all connectors
         connect(tyreForceWheelCenter.frame_b, carrierFrame) annotation(
             Line(points = {{-64, -38}, {-57, -38}, {-57, -26}, {-58, -26}, {-58, 0}, {-100, 0}}, color = {95, 95, 95}));
         connect(tyreTorqueWheelCenter.frame_b, carrierFrame) annotation(
@@ -358,7 +361,7 @@ package Wheels "Wheel, tyre and road models"
         end NominalLoad;
 
         record Data "Tyre data"
-            extends vehicle_dynamics.wheel.Data;
+            extends Wheels.Data;
       // Spring and damping characteristic of tyre
             parameter Real c_x(unit = "N/m") = 100000 "tyre spring constant in x-direction";
             parameter Real c_y(unit = "N/m") = 150000 "tyre spring constant in y-direction";
@@ -377,7 +380,7 @@ package Wheels "Wheel, tyre and road models"
                 Window(x = 0.4, y = 0.4, width = 0.6, height = 0.6));
         end Data;
 
-        block tyreForces "Compute tyre forces and torques for steady state conditions"
+        block TyreForces "Compute tyre forces and torques for steady state conditions"
             import SI = Modelica.SIunits;
             // Compute tire force in contact plane
             // Compute longitudinal and lateral tire forces
@@ -422,22 +425,22 @@ package Wheels "Wheel, tyre and road models"
             parameter Data data "Data of tyre" annotation(
                 extent = [-80, 40; -40, 80]);
         equation
-// (f0,f_x0,f_y0,df_ds,dL) = RillTyre.tyreForces2(data, slip, sinphi,
+// (f0,f_x0,f_y0,df_ds,dL) = RillTyre.TyreForces2(data, slip, sinphi,
 //  cosphi, f_z, mueRoad, camberAngle);
             k_mue = mueRoad / data.mue_nom;
 // Compute data of force slip curve, according to Rill
             f_z1 = data.load1.Fz_nom;
             f_z2 = data.load2.Fz_nom;
-            Fds_x = utilities.interpolate2(f_z, f_z1, data.load1.Fds_x, f_z2, data.load2.Fds_x);
-            Fds_y = utilities.interpolate2(f_z, f_z1, data.load1.Fds_y, f_z2, data.load2.Fds_y);
-            F_max_x = k_mue * utilities.interpolate2(f_z, f_z1, data.load1.F_max_x, f_z2, data.load2.F_max_x);
-            F_max_y = k_mue * utilities.interpolate2(f_z, f_z1, data.load1.F_max_y, f_z2, data.load2.F_max_y);
-            F_slide_x = k_mue * utilities.interpolate2(f_z, f_z1, data.load1.F_slide_x, f_z2, data.load2.F_slide_x);
-            F_slide_y = k_mue * utilities.interpolate2(f_z, f_z1, data.load1.F_slide_y, f_z2, data.load2.F_slide_y);
-            s_max_x = k_mue * utilities.interpolate1(f_z, f_z1, data.load1.s_max_x, f_z2, data.load2.s_max_x);
-            s_max_y = k_mue * utilities.interpolate1(f_z, f_z1, data.load1.s_max_y, f_z2, data.load2.s_max_y);
-            s_slide_x = k_mue * utilities.interpolate1(f_z, f_z1, data.load1.s_slide_x, f_z2, data.load2.s_slide_x);
-            s_slide_y = k_mue * utilities.interpolate1(f_z, f_z1, data.load1.s_slide_y, f_z2, data.load2.s_slide_y);
+            Fds_x = Deprecated.interpolate2(f_z, f_z1, data.load1.Fds_x, f_z2, data.load2.Fds_x);
+            Fds_y = Deprecated.interpolate2(f_z, f_z1, data.load1.Fds_y, f_z2, data.load2.Fds_y);
+            F_max_x = k_mue * Deprecated.interpolate2(f_z, f_z1, data.load1.F_max_x, f_z2, data.load2.F_max_x);
+            F_max_y = k_mue * Deprecated.interpolate2(f_z, f_z1, data.load1.F_max_y, f_z2, data.load2.F_max_y);
+            F_slide_x = k_mue * Deprecated.interpolate2(f_z, f_z1, data.load1.F_slide_x, f_z2, data.load2.F_slide_x);
+            F_slide_y = k_mue * Deprecated.interpolate2(f_z, f_z1, data.load1.F_slide_y, f_z2, data.load2.F_slide_y);
+            s_max_x = k_mue * Deprecated.interpolate1(f_z, f_z1, data.load1.s_max_x, f_z2, data.load2.s_max_x);
+            s_max_y = k_mue * Deprecated.interpolate1(f_z, f_z1, data.load1.s_max_y, f_z2, data.load2.s_max_y);
+            s_slide_x = k_mue * Deprecated.interpolate1(f_z, f_z1, data.load1.s_slide_x, f_z2, data.load2.s_slide_x);
+            s_slide_y = k_mue * Deprecated.interpolate1(f_z, f_z1, data.load1.s_slide_y, f_z2, data.load2.s_slide_y);
             Fds = noEvent(max([sqrt((Fds_x * cosphi) ^ 2 + (Fds_y * sinphi) ^ 2); 1.e-10]));
             s_max = noEvent(max([sqrt((s_max_x * cosphi) ^ 2 + (s_max_y * sinphi) ^ 2); 1.e-10]));
             F_max = noEvent(max([sqrt((F_max_x * cosphi) ^ 2 + (F_max_y * sinphi) ^ 2); 1.e-10]));
@@ -464,19 +467,19 @@ package Wheels "Wheel, tyre and road models"
             f_x0 = f0 * cosphi;
             f_y0 = f0 * sinphi + f_z * tan(camberAngle);
         // Compute attachment point of f_y with respect to contact length (dL)
-            dL0 = utilities.interpolate1(f_z, f_z1, data.load1.dL0, f_z2, data.load2.dL0);
-            s0 = utilities.interpolate1(f_z, f_z1, data.load1.s0, f_z2, data.load2.s0);
-            sE = utilities.interpolate1(f_z, f_z1, data.load1.sE, f_z2, data.load2.sE);
+            dL0 = Deprecated.interpolate1(f_z, f_z1, data.load1.dL0, f_z2, data.load2.dL0);
+            s0 = Deprecated.interpolate1(f_z, f_z1, data.load1.s0, f_z2, data.load2.s0);
+            sE = Deprecated.interpolate1(f_z, f_z1, data.load1.sE, f_z2, data.load2.sE);
             s_y = slip * sinphi;
             dL = noEvent(if abs(s_y) <= s0 then dL0 * (1 - abs(s_y) / s0) else if abs(s_y) <= sE then -dL0 * (abs(s_y) - s0) / s0 * ((sE - abs(s_y)) / (sE - s0)) ^ 2 else 0);
             annotation(
                 Coordsys(extent = [-100, -100; 100, 100], grid = [2, 2], component = [20, 20]),
                 Window(x = 0.11, y = 0, width = 0.88, height = 0.84));
-        end tyreForces;
+        end TyreForces;
 
-        model wheel
+        model Wheel
             import SI = Modelica.SIunits;
-            extends vehicle_dynamics.wheel.BaseWheel(final wheelData(R0 = tyreData.R0, width = tyreData.width, m = tyreData.m, Iyy = tyreData.Iyy, Ixx = tyreData.Ixx), wheel_body.animation = false);
+            extends BaseWheel(final wheelData(R0 = tyreData.R0, width = tyreData.width, m = tyreData.m, Iyy = tyreData.Iyy, Ixx = tyreData.Ixx), wheel_body.animation = false);
             //SLIP DEFINITION
             SI.Angle slipAngle "Angle between wheel axis velocity and the x-direction of the wheel";
             Real slip "slip at contact point computed with contact velocities";
@@ -515,7 +518,7 @@ package Wheels "Wheel, tyre and road models"
             Real S_rel[3, 3];
             parameter Data tyreData annotation(
                 extent = [-80, 60; -60, 80]);
-            tyreForces tyre(data = tyreData) annotation(
+            TyreForces tyre(data = tyreData) annotation(
                 extent = [14, -68; 34, -48]);
             Modelica.Mechanics.MultiBody.Visualizers.FixedShape Tire(extra = 1.0,height = 2 * wheelData.R0, length = abs(wheelData.width), lengthDirection = nShape, shapeType = "cylinder", width = 2 * wheelData.R0, widthDirection = {1, 0, 0})  annotation(
                 Placement(visible = true, transformation(origin = {52, -36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
@@ -551,7 +554,7 @@ package Wheels "Wheel, tyre and road models"
         // Compute  force perpendicular to contact plane.
             f_z = if delta_r >= 0 then tyreData.c_z * delta_z + tyreData.d_z * ddelta_r else 0;
         // Compute steady state tyre forces in x- and y-direction
-        // (f0,f_x0,f_y0,df_ds,dL) = RillTyre.tyreForces(tyreData, slip, sinphi,
+        // (f0,f_x0,f_y0,df_ds,dL) = RillTyre.TyreForces(tyreData, slip, sinphi,
         //  cosphi, f_z, mueRoad, camberAngle);
             tyre.slip = slip;
             tyre.sinphi = sinphi;
@@ -626,9 +629,9 @@ package Wheels "Wheel, tyre and road models"
             S_rel = [nn] * transpose([nn]) + (identity(3) - [nn] * transpose([nn])) * cos(phi) - skew(nn) * sin(phi);
             connect(hub.frame_b, Tire.frame_a) annotation(
                 Line(points = {{-12, 0}, {42, 0}, {42, -36}, {42, -36}}));
-        end wheel;
+        end Wheel;
         model FunctionalTestWheel
-            VehicleDynamics.wheel.RillTyre.wheel wheel annotation(
+            Wheel wheel annotation(
                 Placement(visible = true, transformation(origin = {30, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
             inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
                 Placement(visible = true, transformation(origin = {-82, -70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
@@ -640,10 +643,6 @@ package Wheels "Wheel, tyre and road models"
                 Placement(visible = true, transformation(origin = {-78, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
             Modelica.Blocks.Sources.Ramp ramp(duration = 2, height = 10) annotation(
                 Placement(visible = true, transformation(origin = {-82, 74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-            Modelica.Mechanics.MultiBody.Visualizers.FixedShape fixedShape annotation(
-                Placement(visible = true, transformation(origin = {56, -34}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-            Modelica.Mechanics.MultiBody.Visualizers.FixedShape2 fixedShape2 annotation(
-                Placement(visible = true, transformation(origin = {6, -34}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
         equation
             connect(prismatic.frame_b, wheel.carrierFrame) annotation(
                 Line(points = {{-24, 20}, {20, 20}, {20, 20}, {20, 20}}, color = {95, 95, 95}));

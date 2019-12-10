@@ -1,4 +1,12 @@
 loadModel(Modelica);getErrorString();
 loadFile("package.mo");getErrorString();
-// loadFile("suspension.mo");getErrorString();
-// checkModel(vehicle_dynamics.suspension.MacPherson);getErrorString();
+loadFile("Wheels.mo");getErrorString();
+// checkModel(VehicleDynamics.Environments.NoGraphicsRoad);getErrorString();
+// checkModel(VehicleDynamics.Wheels.Data);getErrorString();
+// checkModel(VehicleDynamics.Wheels.BaseWheel);getErrorString();
+// checkModel(VehicleDynamics.Wheels.RillTyre.NominalLoad);getErrorString();
+// checkModel(VehicleDynamics.Wheels.RillTyre.Data);getErrorString();
+// checkModel(VehicleDynamics.Wheels.RillTyre.TyreForces);getErrorString();
+// checkModel(VehicleDynamics.Wheels.RillTyre.Wheel);getErrorString();
+checkModel(VehicleDynamics.Wheels.RillTyre.FunctionalTestWheel);getErrorString();
+buildModel(VehicleDynamics.Wheels.RillTyre.FunctionalTestWheel);getErrorString();

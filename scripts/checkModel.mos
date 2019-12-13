@@ -3,7 +3,7 @@ loadFile("package.mo");getErrorString();
 loadFile("Environments.mo");getErrorString();
 loadFile("Wheels.mo");getErrorString();
 loadFile("Suspensions.mo");getErrorString();
-checkModel(VehicleDynamics.Suspensions.MacPherson);getErrorString();
+checkModel(VehicleDynamics.Suspensions.MacPherson1);getErrorString();
 // checkModel(VehicleDynamics.Environments.NoGraphicsRoad);getErrorString();
 // checkModel(VehicleDynamics.Wheels.Data);getErrorString();
 // checkModel(VehicleDynamics.Wheels.BaseWheel);getErrorString();

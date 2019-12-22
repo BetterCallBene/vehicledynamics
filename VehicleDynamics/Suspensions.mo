@@ -1,76 +1,6 @@
 within VehicleDynamics;
 
 package Suspensions "Suspensions, models ready to be used as front or rear suspensions."
-  //   model SpringDamperLinearBump3D "Spring-damper in parallel with bumps at ends."
-  //     import SI = Modelica.SIunits;
-  //     import Frames = Modelica.Mechanics.MultiBody.Frames;
-  //     //extends Modelica.Mechanics.MultiBody.Interfaces.PartialTwoFrames;
-  //     parameter SI.Position[3] r_rela0 = {0, 0, 0} "Unstretched translational spring vector";
-  //     parameter SI.Position[3] r_min = {-0.05, -0.03, -0.06} "vector to bump stop from reference point in negative direction";
-  //     parameter SI.Position[3] r_max = {0.05, 0.03, 0.06} "vector to bump stop from reference point in positive direction";
-  //     parameter Real bumpFactor = 1000 "scaleFactor of spring force at after bump";
-  //     parameter SI.Angle[3] phi_rela0 = {0, 0, 0} "Unstretched rotational spring vector";
-  //     parameter Real[6, 6] C = [10000, 0, 0, 0, 0, 0; 0, 10000, 0, 0, 0, 0; 0, 0, 10000, 0, 0, 0; 0, 0, 0, 10000, 0, 0; 0, 0, 0, 0, 10000, 0; 0, 0, 0, 0, 0, 10000] "|Forces|Linear|Stiffness matrix";
-  //     parameter Real[6, 6] D = [10000, 0, 0, 0, 0, 0; 0, 10000, 0, 0, 0, 0; 0, 0, 10000, 0, 0, 0; 0, 0, 0, 10000, 0, 0; 0, 0, 0, 0, 10000, 0; 0, 0, 0, 0, 0, 10000] "|Forces|Linear|Damping matrix";
-  //     parameter Real eps = 1.E-6 "Guard against division by zero";
-  //     parameter Boolean animation = true "True, if animation shall be enabled";
-  //     parameter SI.Position width = r_max[2] - r_min[2] "|Animation|if animation = true| Width bushing";
-  //     parameter SI.Position length = r_max[1] - r_min[1] "|Animation|if animation = true| Width bushing";
-  //     parameter SI.Position height = r_max[3] - r_min[3] "|Animation|if animation = true| Width bushing";
-  //     inner Modelica.Mechanics.MultiBody.World world annotation(
-  //       Placement(visible = true, transformation(origin = {-84, -74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  //     Modelica.Mechanics.MultiBody.Parts.FixedRotation fixedRotation annotation(
-  //       Placement(visible = true, transformation(origin = {-44, -10}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  //   protected
-  //     Real[3, 3] R_rel;
-  //     Real e_a[3](each final unit = "1") "Unit vector on the line connecting the origin of frame_a with the origin of frame_b resolved in frame_a (directed from frame_a to frame_b)";
-  //     Modelica.SIunits.Position r_rel_a[3] "Position vector from origin of frame_a to origin of frame_b, resolved in frame_a";
-  //   equation
-  // //  R_rel   = Frames.relativeRotation(frame_a.R, frame_b.R);
-  // //  r_rel_a = Frames.resolve2(frame_a.R, frame_b.r_0 - frame_a.r_0);
-  // //  s = noEvent(max(Modelica.Math.Vectors.length(r_rel_a), eps));
-  // //  e_a = r_rel_a/s;
-  //     connect(world.frame_b, fixedRotation.frame_a) annotation(
-  //       Line(points = {{-74, -74}, {-74, -42}, {-54, -42}, {-54, -10}}));
-  //   end SpringDamperLinearBump3D;
-
-  model FunctionalTestMacPherson "Description"
-    import SI = Modelica.SIunits;
-    inner Modelica.Mechanics.MultiBody.World world annotation(
-      Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    parameter SI.Position rRL_1[3] = {-0.16, 0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
-    parameter SI.Position rRL_2[3] = {-0.16, -0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
-    VehicleDynamics.Suspensions.MacPherson macPherson annotation(
-      Placement(visible = true, transformation(origin = {18, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = rRFrame) annotation(
-      Placement(visible = true, transformation(origin = {-74, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Blocks.Sources.Ramp ramp(height = 0.1) annotation(
-      Placement(visible = true, transformation(origin = {-88, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Mechanics.MultiBody.Joints.Prismatic prismatic(animation = true, n = rRL_1 - rRL_2, useAxisFlange = true) annotation(
-      Placement(visible = true, transformation(origin = {-38, 24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Mechanics.Translational.Sources.Position position annotation(
-      Placement(visible = true, transformation(origin = {-42, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Mechanics.MultiBody.Parts.Body body(I_11 = 1, I_22 = 1, I_33 = 1, m = 1) annotation(
-      Placement(visible = true, transformation(origin = {60, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  protected
-    parameter SI.Position rRFrame[3] = (rRL_1 + rRL_2) / 2;
-  equation
-    connect(ramp.y, position.s_ref) annotation(
-      Line(points = {{-76, 80}, {-54, 80}, {-54, 80}, {-54, 80}}, color = {0, 0, 127}));
-    connect(position.flange, prismatic.axis) annotation(
-      Line(points = {{-32, 80}, {-32, 55}, {-30, 55}, {-30, 30}}, color = {0, 127, 0}));
-    connect(world.frame_b, fixedTranslation.frame_a) annotation(
-      Line(points = {{-68, -76}, {-84, -76}, {-84, 22}, {-84, 22}, {-84, 22}}, color = {95, 95, 95}));
-    connect(world.frame_b, macPherson.frame_C) annotation(
-      Line(points = {{-68, -76}, {-31, -76}, {-31, -72}, {2, -72}, {2, -18}, {8, -18}}));
-    connect(fixedTranslation.frame_b, prismatic.frame_a) annotation(
-      Line(points = {{-64, 22}, {-48, 22}, {-48, 24}, {-48, 24}}, color = {95, 95, 95}));
-    connect(prismatic.frame_b, macPherson.frame_S) annotation(
-      Line(points = {{-28, 24}, {18, 24}, {18, -8}, {18, -8}}, color = {95, 95, 95}));
-    connect(macPherson.frame_U, body.frame_a) annotation(
-      Line(points = {{28, -18}, {50, -18}, {50, -18}, {50, -18}}, color = {95, 95, 95}));
-  end FunctionalTestMacPherson;
-
   model MacPherson
     import SI = Modelica.SIunits;
     extends Chassis.Interfaces.Linkages;
@@ -425,41 +355,44 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
       Line(points = {{-6, -52}, {16, -52}}));
   end ExampleMultiLink;
 
-  model ExampleLink "Example MultiLink"
+  package Tests "Tests of suspensions"
+    model MacPhersonBasic "Description"
+    import SI=Modelica.SIunits;
     inner Modelica.Mechanics.MultiBody.World world annotation(
-      Placement(visible = true, transformation(origin = {-80, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    VehicleDynamics.Suspensions.Link link(n1_a = {0, 0, 1}, rA = {0, 0, 0.5}, rB = {0.5, 0, 0}) annotation(
-      Placement(visible = true, transformation(origin = {-32, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Mechanics.MultiBody.Parts.Body body(m = 1) annotation(
-      Placement(visible = true, transformation(origin = {58, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  equation
-    connect(world.frame_b, link.frame_a) annotation(
-      Line(points = {{-70, 0}, {-42, 0}}, color = {95, 95, 95}));
-    connect(link.frame_b, body.frame_a) annotation(
-      Line(points = {{-22, 0}, {48, 0}, {48, 0}, {48, 0}}, color = {95, 95, 95}));
-  end ExampleLink;
+      Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      parameter SI.Position rRL_1[3]= {-0.16, 0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
+      parameter SI.Position rRL_2[3]= {-0.16, -0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
+      VehicleDynamics.Suspensions.MacPherson macPherson annotation(
+          Placement(visible = true, transformation(origin = {18, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = rRFrame) annotation(
+          Placement(visible = true, transformation(origin = {-74, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      Modelica.Blocks.Sources.Ramp ramp(height = 0.1) annotation(
+          Placement(visible = true, transformation(origin = {-88, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      Modelica.Mechanics.MultiBody.Joints.Prismatic prismatic(animation = true, n = rRL_1 - rRL_2, useAxisFlange = true) annotation(
+          Placement(visible = true, transformation(origin = {-38, 24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      Modelica.Mechanics.Translational.Sources.Position position annotation(
+          Placement(visible = true, transformation(origin = {-42, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      Modelica.Mechanics.MultiBody.Parts.Body body(I_11 = 1, I_22 = 1, I_33 = 1, m = 1)  annotation(
+          Placement(visible = true, transformation(origin = {60, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      protected
+      parameter SI.Position rRFrame[3]= (rRL_1 + rRL_2) / 2;
+      equation
+    connect(ramp.y, position.s_ref) annotation(
+      Line(points = {{-76, 80}, {-54, 80}, {-54, 80}, {-54, 80}}, color = {0, 0, 127}));
+    connect(position.flange, prismatic.axis) annotation(
+      Line(points = {{-32, 80}, {-32, 55}, {-30, 55}, {-30, 30}}, color = {0, 127, 0}));
+    connect(world.frame_b, fixedTranslation.frame_a) annotation(
+        Line(points = {{-68, -76}, {-84, -76}, {-84, 22}, {-84, 22}, {-84, 22}}, color = {95, 95, 95}));
+    connect(world.frame_b, macPherson.frame_C) annotation(
+        Line(points = {{-68, -76}, {-31, -76}, {-31, -72}, {2, -72}, {2, -18}, {8, -18}}));
+    connect(fixedTranslation.frame_b, prismatic.frame_a) annotation(
+        Line(points = {{-64, 22}, {-48, 22}, {-48, 24}, {-48, 24}}, color = {95, 95, 95}));
+    connect(prismatic.frame_b, macPherson.frame_S) annotation(
+        Line(points = {{-28, 24}, {18, 24}, {18, -8}, {18, -8}}, color = {95, 95, 95}));
+    connect(macPherson.frame_U, body.frame_a) annotation(
+        Line(points = {{28, -18}, {50, -18}, {50, -18}, {50, -18}}, color = {95, 95, 95}));
+    end MacPhersonBasic;
+  end Tests;
 
-  // model CutPushRod "Two bushings connected by a massless rod"
-  //   import SI = Modelica.SIunits;
-  //   parameter SI.Position[3] rA = {0, 0, 0} "Position vector from frame_a to center of bushingA, resolved in frame_a";
-  //   parameter SI.Position[3] rB = {0, 0, 0} "Position vector from center of bushingb to frame_b, resolved in frame_b";
-  //   parameter SI.Position[3] rRod = {1, 0, 0} "Position vector from rod.frame_a to rod.frame_b, resolved in frame_a at the initial configuration";
-  //   inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
-  //     Placement(visible = true, transformation(origin = {-86, -74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  //   Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = {1, 0, 0}) annotation(
-  //     Placement(visible = true, transformation(origin = {-82, -4}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  // Modelica.Mechanics.MultiBody.Joints.FreeMotion freeMotion annotation(
-  //     Placement(visible = true, transformation(origin = {-24, -32}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  // Modelica.Mechanics.MultiBody.Forces.SpringDamperParallel springDamperParallel(c = 100, d = 100)  annotation(
-  //     Placement(visible = true, transformation(origin = {-12, 10}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  // Modelica.Mechanics.MultiBody.Joints.UniversalSpherical link annotation(
-  //     Placement(visible = true, transformation(origin = {-27, 61}, extent = {{-11, -11}, {11, 11}}, rotation = 0)));
-  // equation
-  //   connect(world.frame_b, fixedTranslation.frame_a) annotation(
-  //     Line(points = {{-76, -74}, {-92, -74}, {-92, -4}}, color = {95, 95, 95}));
-  // connect(fixedTranslation.frame_b, freeMotion.frame_a) annotation(
-  //     Line(points = {{-72, -4}, {-34, -4}, {-34, -32}}, color = {95, 95, 95}));
-  // connect(fixedTranslation.frame_b, springDamperParallel.frame_a) annotation(
-  //     Line(points = {{-72, -4}, {-22, -4}, {-22, 10}}, color = {95, 95, 95}));
-  // end CutPushRod;
+  
 end Suspensions;

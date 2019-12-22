@@ -1,45 +1,6 @@
 within VehicleDynamics;
 
 package Suspensions "Suspensions, models ready to be used as front or rear suspensions."
-  model FunctionalTestMacPherson "Description"
-    import SI=Modelica.SIunits;
-    inner Modelica.Mechanics.MultiBody.World world annotation(
-      Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  parameter SI.Position rRL_1[3]= {-0.16, 0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
-  parameter SI.Position rRL_2[3]= {-0.16, -0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
-  VehicleDynamics.Suspensions.MacPherson macPherson annotation(
-      Placement(visible = true, transformation(origin = {18, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = rRFrame) annotation(
-      Placement(visible = true, transformation(origin = {-74, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.Ramp ramp(height = 0.1) annotation(
-      Placement(visible = true, transformation(origin = {-88, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Joints.Prismatic prismatic(animation = true, n = rRL_1 - rRL_2, useAxisFlange = true) annotation(
-      Placement(visible = true, transformation(origin = {-38, 24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.Translational.Sources.Position position annotation(
-      Placement(visible = true, transformation(origin = {-42, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.Body body(I_11 = 1, I_22 = 1, I_33 = 1, m = 1)  annotation(
-      Placement(visible = true, transformation(origin = {60, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  protected
-  parameter SI.Position rRFrame[3]= (rRL_1 + rRL_2) / 2;
-  equation
-    connect(ramp.y, position.s_ref) annotation(
-      Line(points = {{-76, 80}, {-54, 80}, {-54, 80}, {-54, 80}}, color = {0, 0, 127}));
-    connect(position.flange, prismatic.axis) annotation(
-      Line(points = {{-32, 80}, {-32, 55}, {-30, 55}, {-30, 30}}, color = {0, 127, 0}));
-  connect(world.frame_b, fixedTranslation.frame_a) annotation(
-      Line(points = {{-68, -76}, {-84, -76}, {-84, 22}, {-84, 22}, {-84, 22}}, color = {95, 95, 95}));
-  connect(world.frame_b, macPherson.frame_C) annotation(
-      Line(points = {{-68, -76}, {-31, -76}, {-31, -72}, {2, -72}, {2, -18}, {8, -18}}));
-  connect(fixedTranslation.frame_b, prismatic.frame_a) annotation(
-      Line(points = {{-64, 22}, {-48, 22}, {-48, 24}, {-48, 24}}, color = {95, 95, 95}));
-  connect(prismatic.frame_b, macPherson.frame_S) annotation(
-      Line(points = {{-28, 24}, {18, 24}, {18, -8}, {18, -8}}, color = {95, 95, 95}));
-  connect(macPherson.frame_U, body.frame_a) annotation(
-      Line(points = {{28, -18}, {50, -18}, {50, -18}, {50, -18}}, color = {95, 95, 95}));
-  end FunctionalTestMacPherson;
-
-  
-
   model MacPherson
     import SI = Modelica.SIunits;
     extends Chassis.Interfaces.Linkages;
@@ -116,4 +77,43 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
   connect(jointSSR.frame_a, frame_S) annotation(
       Line(points = {{54, 66}, {0, 66}, {0, 100}, {0, 100}}, color = {95, 95, 95}));
   end MacPherson;
+
+  package Tests "Tests of suspensions"
+    model MacPhersonBasic "Description"
+    import SI=Modelica.SIunits;
+    inner Modelica.Mechanics.MultiBody.World world annotation(
+      Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  parameter SI.Position rRL_1[3]= {-0.16, 0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
+  parameter SI.Position rRL_2[3]= {-0.16, -0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
+  VehicleDynamics.Suspensions.MacPherson macPherson annotation(
+      Placement(visible = true, transformation(origin = {18, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = rRFrame) annotation(
+      Placement(visible = true, transformation(origin = {-74, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Sources.Ramp ramp(height = 0.1) annotation(
+      Placement(visible = true, transformation(origin = {-88, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Joints.Prismatic prismatic(animation = true, n = rRL_1 - rRL_2, useAxisFlange = true) annotation(
+      Placement(visible = true, transformation(origin = {-38, 24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.Translational.Sources.Position position annotation(
+      Placement(visible = true, transformation(origin = {-42, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.Body body(I_11 = 1, I_22 = 1, I_33 = 1, m = 1)  annotation(
+      Placement(visible = true, transformation(origin = {60, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  protected
+  parameter SI.Position rRFrame[3]= (rRL_1 + rRL_2) / 2;
+  equation
+    connect(ramp.y, position.s_ref) annotation(
+      Line(points = {{-76, 80}, {-54, 80}, {-54, 80}, {-54, 80}}, color = {0, 0, 127}));
+    connect(position.flange, prismatic.axis) annotation(
+      Line(points = {{-32, 80}, {-32, 55}, {-30, 55}, {-30, 30}}, color = {0, 127, 0}));
+  connect(world.frame_b, fixedTranslation.frame_a) annotation(
+      Line(points = {{-68, -76}, {-84, -76}, {-84, 22}, {-84, 22}, {-84, 22}}, color = {95, 95, 95}));
+  connect(world.frame_b, macPherson.frame_C) annotation(
+      Line(points = {{-68, -76}, {-31, -76}, {-31, -72}, {2, -72}, {2, -18}, {8, -18}}));
+  connect(fixedTranslation.frame_b, prismatic.frame_a) annotation(
+      Line(points = {{-64, 22}, {-48, 22}, {-48, 24}, {-48, 24}}, color = {95, 95, 95}));
+  connect(prismatic.frame_b, macPherson.frame_S) annotation(
+      Line(points = {{-28, 24}, {18, 24}, {18, -8}, {18, -8}}, color = {95, 95, 95}));
+  connect(macPherson.frame_U, body.frame_a) annotation(
+      Line(points = {{28, -18}, {50, -18}, {50, -18}, {50, -18}}, color = {95, 95, 95}));
+  end MacPhersonBasic;
+  end Tests;
 end Suspensions;

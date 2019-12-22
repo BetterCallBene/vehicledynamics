@@ -630,31 +630,34 @@ package Wheels "Wheel, tyre and road models"
             connect(hub.frame_b, Tire.frame_a) annotation(
                 Line(points = {{-12, 0}, {42, 0}, {42, -36}, {42, -36}}));
         end Wheel;
-        model FunctionalTestWheel
-            Wheel wheel annotation(
-                Placement(visible = true, transformation(origin = {30, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-            inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
-                Placement(visible = true, transformation(origin = {-82, -70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-            Modelica.Mechanics.Rotational.Sources.Torque torque annotation(
-                Placement(visible = true, transformation(origin = {-26, 74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-            Modelica.Mechanics.MultiBody.Joints.Prismatic prismatic annotation(
-                Placement(visible = true, transformation(origin = {-34, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-            Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(r = {0, 0, 0.299}) annotation(
-                Placement(visible = true, transformation(origin = {-78, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-            Modelica.Blocks.Sources.Ramp ramp(duration = 2, height = 10) annotation(
-                Placement(visible = true, transformation(origin = {-82, 74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-        equation
-            connect(prismatic.frame_b, wheel.carrierFrame) annotation(
-                Line(points = {{-24, 20}, {20, 20}, {20, 20}, {20, 20}}, color = {95, 95, 95}));
-            connect(world.frame_b, fixedTranslation.frame_a) annotation(
-                Line(points = {{-72, -70}, {-88, -70}, {-88, -18}, {-88, -18}}, color = {95, 95, 95}));
-            connect(fixedTranslation.frame_b, prismatic.frame_a) annotation(
-                Line(points = {{-68, -18}, {-44, -18}, {-44, 20}, {-44, 20}}));
-            connect(torque.flange, wheel.driveShaft1D) annotation(
-                Line(points = {{-16, 74}, {30, 74}, {30, 30}, {30, 30}}));
-            connect(ramp.y, torque.tau) annotation(
-            Line(points = {{-71, 74}, {-38, 74}}, color = {0, 0, 127}));
-        end FunctionalTestWheel;
     end RillTyre;
+
+    package Tests "Tests tyre implementation"
+            model RillTyreBasic
+                RillTyre.Wheel wheel annotation(
+                    Placement(visible = true, transformation(origin = {30, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+                inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
+                    Placement(visible = true, transformation(origin = {-82, -70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+                Modelica.Mechanics.Rotational.Sources.Torque torque annotation(
+                    Placement(visible = true, transformation(origin = {-26, 74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+                Modelica.Mechanics.MultiBody.Joints.Prismatic prismatic annotation(
+                    Placement(visible = true, transformation(origin = {-34, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+                Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(r = {0, 0, 0.299}) annotation(
+                    Placement(visible = true, transformation(origin = {-78, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+                Modelica.Blocks.Sources.Ramp ramp(duration = 2, height = 10) annotation(
+                    Placement(visible = true, transformation(origin = {-82, 74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+            equation
+                connect(prismatic.frame_b, wheel.carrierFrame) annotation(
+                    Line(points = {{-24, 20}, {20, 20}, {20, 20}, {20, 20}}, color = {95, 95, 95}));
+                connect(world.frame_b, fixedTranslation.frame_a) annotation(
+                    Line(points = {{-72, -70}, {-88, -70}, {-88, -18}, {-88, -18}}, color = {95, 95, 95}));
+                connect(fixedTranslation.frame_b, prismatic.frame_a) annotation(
+                    Line(points = {{-68, -18}, {-44, -18}, {-44, 20}, {-44, 20}}));
+                connect(torque.flange, wheel.driveShaft1D) annotation(
+                    Line(points = {{-16, 74}, {30, 74}, {30, 30}, {30, 30}}));
+                connect(ramp.y, torque.tau) annotation(
+                Line(points = {{-71, 74}, {-38, 74}}, color = {0, 0, 127}));
+            end RillTyreBasic;
+        end Tests;
     
 end Wheels;

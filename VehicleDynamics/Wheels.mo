@@ -502,7 +502,8 @@ package Wheels "Wheel, tyre and road models"
 
     model Wheel
       import SI = Modelica.SIunits;
-      extends BaseWheel(final wheelData(R0 = tyreData.R0, width = tyreData.width, m = tyreData.m, Iyy = tyreData.Iyy, Ixx = tyreData.Ixx), wheel_body.animation = false);
+      extends BaseWheel(redeclare ParameterSets.RillTyre.Wheel wheelData,
+        wheel_body.animation = false);
       //SLIP DEFINITION
       SI.Angle slipAngle "Angle between wheel axis velocity and the x-direction of the wheel";
       Real slip "slip at contact point computed with contact velocities";
@@ -539,19 +540,14 @@ package Wheels "Wheel, tyre and road models"
       Real delta_x_scaled "delta_x scaled on nominal value";
       Real delta_y_scaled "delta_y scaled on nominal value";
       Real S_rel[3, 3];
-    //  parameter ParameterSets.RillTyre.Wheel tyreData annotation(
-    //    extent = [-80, 60; -60, 80]);
-    //  TyreForces tyre(data = tyreData) annotation(
-    //    extent = [14, -68; 34, -48]);
+    
       Modelica.Mechanics.MultiBody.Visualizers.FixedShape Tire(extra = 1.0, height = 2 * wheelData.R0, length = abs(wheelData.width), lengthDirection = nShape, shapeType = "cylinder", width = 2 * wheelData.R0, widthDirection = {1, 0, 0}) annotation(
         Placement(visible = true, transformation(origin = {52, -36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Wheels.ParameterSets.RillTyre.Wheel tyreData annotation(
-        Placement(visible = true, transformation(origin = {-84, 90}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   VehicleDynamics.Wheels.RillTyre.TyreForces tyre annotation(
         Placement(visible = true, transformation(origin = {-86, 64}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     protected
-      parameter Real delta_x_nom = tyreData.load1.F_slide_x / tyreData.c_x "nominal tyre deflection in x-direction";
-      parameter Real delta_y_nom = tyreData.load1.F_slide_y / tyreData.c_y "nominal tyre deflection in y-direction";
+      parameter Real delta_x_nom = wheelData.load1.F_slide_x / wheelData.c_x "nominal tyre deflection in x-direction";
+      parameter Real delta_y_nom = wheelData.load1.F_slide_y / wheelData.c_y "nominal tyre deflection in y-direction";
     equation
 //SLIP DEFINITION
 //slipAngle = Modelica.Math.atan2(Cv[2], noEvent(abs(Cv[1])));
@@ -579,9 +575,9 @@ package Wheels "Wheel, tyre and road models"
 //TYRE FORCES AND TORQUES
       delta_z = if delta_r >= 0 then delta_r else 0;
 // Compute  force perpendicular to contact plane.
-      f_z = if delta_r >= 0 then tyreData.c_z * delta_z + tyreData.d_z * ddelta_r else 0;
+      f_z = if delta_r >= 0 then wheelData.c_z * delta_z + wheelData.d_z * ddelta_r else 0;
 // Compute steady state tyre forces in x- and y-direction
-// (f0,f_x0,f_y0,df_ds,dL) = RillTyre.TyreForces(tyreData, slip, sinphi,
+// (f0,f_x0,f_y0,df_ds,dL) = RillTyre.TyreForces(wheelData, slip, sinphi,
 //  cosphi, f_z, mueRoad, camberAngle);
       tyre.slip = slip;
       tyre.sinphi = sinphi;
@@ -627,11 +623,11 @@ package Wheels "Wheel, tyre and road models"
            derived by simplified assumptions).
         */
       contact = delta_r >= 0;
-      Lcontact = noEvent(sqrt(8 * tyreData.R0 * (delta_z + delta_z_offset)) - sqrt(8 * tyreData.R0 * delta_z_offset));
+      Lcontact = noEvent(sqrt(8 * wheelData.R0 * (delta_z + delta_z_offset)) - sqrt(8 * wheelData.R0 * delta_z_offset));
       delta_diff = noEvent(sqrt(delta_x * delta_x + delta_y * delta_y) - abs(delta_eps * slip * Lcontact));
       delta_diff_pos = noEvent(if delta_diff >= 0 or Rw >= 1 then 1 else 0);
-      der(delta_x_scaled) = (if not contact then 0 else if noEvent(delta_diff_pos > 0.5) then (f_x0 - tyreData.c_x * delta_x) / (tyreData.d_x - dfx_dvx) else -Wv_x) / delta_x_nom;
-      der(delta_y_scaled) = (if not contact then 0 else if noEvent(delta_diff_pos > 0.5) then (f_y0 - tyreData.c_y * delta_y) / (tyreData.d_y - dfy_dvy) else -Wv_y) / delta_y_nom;
+      der(delta_x_scaled) = (if not contact then 0 else if noEvent(delta_diff_pos > 0.5) then (f_x0 - wheelData.c_x * delta_x) / (wheelData.d_x - dfx_dvx) else -Wv_x) / delta_x_nom;
+      der(delta_y_scaled) = (if not contact then 0 else if noEvent(delta_diff_pos > 0.5) then (f_y0 - wheelData.c_y * delta_y) / (wheelData.d_y - dfy_dvy) else -Wv_y) / delta_y_nom;
       delta_x = delta_x_scaled * delta_x_nom;
       delta_y = delta_y_scaled * delta_y_nom;
       when change(contact) then
@@ -640,8 +636,8 @@ package Wheels "Wheel, tyre and road models"
         reinit(delta_y_scaled, 0);
       end when;
 // Compute dynamic tyre forces in x- and y-direction and tyre torque in z-direction
-      f_x = tyreData.c_x * delta_x + tyreData.d_x * der(delta_x);
-      f_y = tyreData.c_y * delta_y + tyreData.d_y * der(delta_y);
+      f_x = wheelData.c_x * delta_x + wheelData.d_x * der(delta_x);
+      f_y = wheelData.c_y * delta_y + wheelData.d_y * der(delta_y);
       t_z = -Lcontact * dL * f_y;
 //FORCES AND MOMENTS REQUIRED BY THE BaseWheel
       F_x = f_x;

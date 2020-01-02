@@ -3,23 +3,23 @@ within VehicleDynamics;
 package Steering "Steering systems"
   model RackSteering "Standard steering system"
     import SI = Modelica.SIunits;
-    parameter SI.Position rRL_1[3] = {-0.16, 0.54, 0};
-    parameter SI.Position rRL_2[3] = {-0.16, -0.54, 0};
+    parameter SI.Position rRL_LF[3] = {-0.16, 0.54, 0};
+    parameter SI.Position rRL_RF[3] = {-0.16, -0.54, 0};
     parameter Real ratioWheelToRack = 22 "rotatational to translational ratio [m/rad]";
     parameter SI.Inertia iSW = 0.2 "Steering inertia";
-    Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = (rRL_1 + rRL_2) / 2) annotation(
-      Placement(visible = true, transformation(origin = {24, 42}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Mechanics.MultiBody.Joints.Prismatic prismatic(animation = true, n = rRL_1 - rRL_2, useAxisFlange = true) annotation(
-      Placement(visible = true, transformation(origin = {-40, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+    Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = (rRL_LF + rRL_RF) / 2) annotation(
+      Placement(visible = true, transformation(origin = {24, 40}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    Modelica.Mechanics.MultiBody.Joints.Prismatic prismatic(animation = true, n = rRL_LF - rRL_RF, useAxisFlange = true) annotation(
+      Placement(visible = true, transformation(origin = {-26, 40}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
     Modelica.Mechanics.Rotational.Components.IdealGearR2T wheelToRack(ratio = 1 / ratioWheelToRack) annotation(
       Placement(visible = true, transformation(origin = {-18, -48}, extent = {{16, -16}, {-16, 16}}, rotation = 0)));
     Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a annotation(
       Placement(visible = true, transformation(origin = {100, -48}, extent = {{-16, -16}, {16, 16}}, rotation = 0), iconTransformation(origin = {100, -48}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
     Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_C annotation(
       Placement(visible = true, transformation(origin = {100, 0}, extent = {{-16, -16}, {16, 16}}, rotation = 0), iconTransformation(origin = {100, 0}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
-    Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_X_1 annotation(
+    Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_X_LF annotation(
       Placement(visible = true, transformation(origin = {-60, -100}, extent = {{-16, -16}, {16, 16}}, rotation = 0), iconTransformation(origin = {-60, -100}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
-    Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_X_2 annotation(
+    Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_X_RF annotation(
       Placement(visible = true, transformation(origin = {-60, 100}, extent = {{-16, -16}, {16, 16}}, rotation = 0), iconTransformation(origin = {-60, 100}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = iSW) annotation(
       Placement(visible = true, transformation(origin = {62, -48}, extent = {{16, -16}, {-16, 16}}, rotation = 0)));
@@ -31,13 +31,7 @@ package Steering "Steering systems"
       Placement(visible = true, transformation(origin = {22, -48}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
   equation
     connect(frame_C, fixedTranslation.frame_b) annotation(
-      Line(points = {{100, 0}, {34, 0}, {34, 42}, {34, 42}}));
-    connect(prismatic.frame_a, fixedTranslation.frame_a) annotation(
-      Line(points = {{-40, 10}, {-40, 42}, {14, 42}}, color = {95, 95, 95}));
-    connect(prismatic.frame_a, frame_X_2) annotation(
-      Line(points = {{-40, 10}, {-40, 10}, {-40, 100}, {-60, 100}}, color = {95, 95, 95}));
-    connect(prismatic.frame_a, frame_X_1) annotation(
-      Line(points = {{-40, 10}, {-60, 10}, {-60, -100}, {-60, -100}}, color = {95, 95, 95}));
+      Line(points = {{100, 0}, {34, 0}, {34, 40}}));
   connect(inertia.flange_a, flange_a) annotation(
       Line(points = {{78, -48}, {100, -48}}));
   connect(inertia.flange_b, springDamper.flange_a) annotation(
@@ -45,6 +39,12 @@ package Steering "Steering systems"
   connect(springDamper.flange_b, wheelToRack.flangeR) annotation(
       Line(points = {{12, -48}, {-2, -48}}));
   connect(wheelToRack.flangeT, prismatic.axis) annotation(
-      Line(points = {{-34, -48}, {-34, -8}}, color = {0, 127, 0}));
+      Line(points = {{-34, -48}, {-34, 34}}, color = {0, 127, 0}));
+  connect(fixedTranslation.frame_a, prismatic.frame_a) annotation(
+      Line(points = {{14, 40}, {-16, 40}, {-16, 40}, {-16, 40}}, color = {95, 95, 95}));
+  connect(prismatic.frame_b, frame_X_LF) annotation(
+      Line(points = {{-36, 40}, {-60, 40}, {-60, -100}, {-60, -100}}, color = {95, 95, 95}));
+  connect(prismatic.frame_b, frame_X_RF) annotation(
+      Line(points = {{-36, 40}, {-60, 40}, {-60, 100}, {-60, 100}}, color = {95, 95, 95}));
   end RackSteering;
 end Steering;

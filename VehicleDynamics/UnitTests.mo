@@ -2,27 +2,40 @@ within VehicleDynamics;
 
 package UnitTests "Unit tests of VehicleDynamics"
     package WheelAndSuspension "Description"
-        model SuspensionTest
-    VehicleDynamics.Suspensions.MacPherson macPherson annotation(
-        Placement(visible = true, transformation(origin = {-2, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  inner Modelica.Mechanics.MultiBody.World world annotation(
-        Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Wheels.RillTyre.Wheel wheel_RF(leftWheel = false)  annotation(
-        Placement(visible = true, transformation(origin = {58, 2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Wheels.RillTyre.Wheel wheel_LF annotation(
-        Placement(visible = true, transformation(origin = {-68, 2}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(r = {0, 0, 1.0}) annotation(
-        Placement(visible = true, transformation(origin = {-4, -50}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    equation
-      connect(macPherson.frame_Wheel_R, wheel_RF.carrierFrame) annotation(
-        Line(points = {{8, 2}, {48, 2}}, color = {95, 95, 95}));
-      connect(macPherson.frame_Wheel_L, wheel_LF.carrierFrame) annotation(
-        Line(points = {{-12, 2}, {-58, 2}}, color = {95, 95, 95}));
-      connect(fixedTranslation.frame_b, macPherson.frame_C) annotation(
-        Line(points = {{6, -50}, {-2, -50}, {-2, -10}}));
+    model SuspensionTest "Description"
+    VehicleDynamics.Suspensions.ParameterSets.MacPherson macPhersonData annotation(
+      Placement(visible = true, transformation(origin = {-76, 84}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.MacPherson macPherson_LF(macPhersonData = macPhersonData.macPherson_LF)  annotation(
+      Placement(visible = true, transformation(origin = {-48, 20}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+  VehicleDynamics.Steering.RackSteering rackSteering(rRL_LF = macPhersonData.macPherson_LF.rRL, rRL_RF = macPhersonData.macPherson_RF.rRL, rackSteeringData = macPhersonData.rackSteering)  annotation(
+      Placement(visible = true, transformation(origin = {0, 50}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  VehicleDynamics.Suspensions.Components.MacPherson2 macPherson_RF(macPhersonData = macPhersonData.macPherson_RF)  annotation(
+      Placement(visible = true, transformation(origin = {52, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
+        Placement(visible = true, transformation(origin = {-60, -58}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(r = {0, 0, 1})  annotation(
+        Placement(visible = true, transformation(origin = {-12, -58}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Wheels.RillTyre.Wheel wheel_R(leftWheel = false)  annotation(
+        Placement(visible = true, transformation(origin = {86, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Wheels.RillTyre.Wheel wheel_L annotation(
+        Placement(visible = true, transformation(origin = {-84, 20}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+  equation
+      connect(rackSteering.frame_X_LF, macPherson_LF.frame_S) annotation(
+        Line(points = {{-10, 56}, {-48, 56}, {-48, 30}, {-48, 30}}, color = {95, 95, 95}));
+      connect(rackSteering.frame_X_RF, macPherson_RF.frame_S) annotation(
+        Line(points = {{10, 56}, {52, 56}, {52, 30}, {52, 30}}));
       connect(world.frame_b, fixedTranslation.frame_a) annotation(
-        Line(points = {{-68, -76}, {-14, -76}, {-14, -50}, {-14, -50}}, color = {95, 95, 95}));
+        Line(points = {{-50, -58}, {-22, -58}, {-22, -58}, {-22, -58}}, color = {95, 95, 95}));
+      connect(fixedTranslation.frame_b, rackSteering.frame_C) annotation(
+        Line(points = {{-2, -58}, {0, -58}, {0, 40}, {0, 40}}));
+  connect(macPherson_RF.frame_U, wheel_R.carrierFrame) annotation(
+        Line(points = {{62, 20}, {76, 20}}));
+  connect(macPherson_LF.frame_U, wheel_L.carrierFrame) annotation(
+        Line(points = {{-58, 20}, {-74, 20}, {-74, 20}, {-74, 20}}));
+  connect(fixedTranslation.frame_b, macPherson_LF.frame_C) annotation(
+        Line(points = {{-2, -58}, {-38, -58}, {-38, 20}, {-38, 20}}, color = {95, 95, 95}));
+  connect(fixedTranslation.frame_b, macPherson_RF.frame_C) annotation(
+        Line(points = {{-2, -58}, {42, -58}, {42, 20}, {42, 20}}, color = {95, 95, 95}));
     end SuspensionTest;
     end WheelAndSuspension;
 end UnitTests;
-

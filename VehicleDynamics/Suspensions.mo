@@ -233,6 +233,8 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
 
     model MacPherson
     import SI = Modelica.SIunits;
+    import Math = Modelica.Math;
+    import To_deg = Modelica.SIunits.Conversions.to_deg;
     extends Modelica.Icons.Package;
     extends Interfaces.Linkages;
     
@@ -247,54 +249,63 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
     Modelica.Mechanics.MultiBody.Parts.FixedTranslation frontBar(animation = true, r = macPhersonData.rUL1L2 - macPhersonData.rCL1) annotation(
       Placement(visible = true, transformation(origin = {-24, -82}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     Modelica.Mechanics.MultiBody.Parts.FixedTranslation rearBar(animation = true, r = macPhersonData.rCL2 - macPhersonData.rUL1L2) annotation(
-      Placement(visible = true, transformation(origin = {-56, -46}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+      Placement(visible = true, transformation(origin = {-32, -56}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
     Modelica.Mechanics.MultiBody.Forces.SpringDamperParallel struct(animation = true, c = macPhersonData.fc, d = macPhersonData.fd, s_unstretched = q0Strut) annotation(
       Placement(visible = true, transformation(origin = {0, 34}, extent = {{10, 10}, {-10, -10}}, rotation = 180)));
     Modelica.Mechanics.MultiBody.Joints.Assemblies.JointSSR jointSSR(n_b = macPhersonData.rCS - macPhersonData.rUL1L2, rRod2_ib = macPhersonData.rRL - macPhersonData.rUL1L2, rod1Length = macPhersonData.steeringRodLength) annotation(
       Placement(visible = true, transformation(origin = {54, 46}, extent = {{-20, 20}, {20, -20}}, rotation = -90)));
     Modelica.Mechanics.MultiBody.Parts.FixedTranslation springRod(animation = true, r = macPhersonData.rUS - macPhersonData.rUL1L2) annotation(
       Placement(visible = true, transformation(origin = {17, -5}, extent = {{-17, -17}, {17, 17}}, rotation = 90)));
-    Modelica.Mechanics.MultiBody.Joints.Assemblies.JointUPS MacPherson(n1_a = n_a, nAxis_ia = {0, 0, 1}) annotation(
+    Modelica.Mechanics.MultiBody.Joints.Assemblies.JointUPS MacPherson(animation = false,n1_a = n_a, nAxis_ia = {0, 0, 1}) annotation(
       Placement(visible = true, transformation(origin = {-44, 18}, extent = {{20, -20}, {-20, 20}}, rotation = -90)));
     Modelica.Mechanics.MultiBody.Parts.FixedTranslation outerRod(r = macPhersonData.rUW - macPhersonData.rUL1L2) annotation(
-      Placement(visible = true, transformation(origin = {76, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      Placement(visible = true, transformation(origin = {44, -80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   replaceable parameter ParameterSets.Components.MacPherson macPhersonData annotation(
       Placement(visible = true, transformation(origin = {-76, 86}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  protected
-    parameter SI.Length q0Strut = Modelica.Math.Vectors.length(macPhersonData.rCS - macPhersonData.rUS) + macPhersonData.q0S;
+    parameter Real angleBetweenBreaksAndSuspension = To_deg(-Math.asin(Math.Vectors.norm(cross(rS, {0, 0, 1}))/ Math.Vectors.norm(rS)));
+  Modelica.Mechanics.MultiBody.Parts.FixedRotation rotRod(angle = angleBetweenBreaksAndSuspension, n = {1, 0, 0}, rotationType = Modelica.Mechanics.MultiBody.Types.RotationTypes.RotationAxis) annotation(
+        Placement(visible = true, transformation(origin = {74, -80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     parameter SI.Position rS[3] = macPhersonData.rCS - macPhersonData.rUL1L2;
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation debug(r = macPhersonData.rUW - macPhersonData.rCS)  annotation(
+        Placement(visible = true, transformation(origin = {-68, 22}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+    protected
+    parameter SI.Length q0Strut = Modelica.Math.Vectors.length(macPhersonData.rCS - macPhersonData.rUS) + macPhersonData.q0S;
     parameter SI.Position rU[3] = macPhersonData.rUW - macPhersonData.rUL1L2 "Position vector from frame_L1L2 to frame_U, resolved in frame_C";
     parameter Real n_a[3] = cross(rS, rU) "First rotation axis of universalUtilities.Joints.Joint in springJoint, resolved in frame_C";
   equation
-    connect(lower.frame_b, innerJoint.frame_a) annotation(
-      Line(points = {{-68, -82}, {-62, -82}}, color = {95, 95, 95}));
-    connect(innerJoint.frame_b, frontBar.frame_a) annotation(
-      Line(points = {{-42, -82}, {-34, -82}}, color = {95, 95, 95}));
-    connect(frontBar.frame_b, rearBar.frame_a) annotation(
-      Line(points = {{-14, -82}, {-12, -82}, {-12, -46}, {-46, -46}}));
-    connect(upper.frame_b, MacPherson.frame_b) annotation(
-      Line(points = {{-68, 48}, {-44, 48}, {-44, 38}}, color = {95, 95, 95}));
-    connect(frontBar.frame_b, MacPherson.frame_a) annotation(
-      Line(points = {{-14, -82}, {-12, -82}, {-12, -38}, {-44, -38}, {-44, -2}}, color = {95, 95, 95}));
+      connect(lower.frame_b, innerJoint.frame_a) annotation(
+        Line(points = {{-68, -82}, {-62, -82}}, color = {95, 95, 95}));
+      connect(innerJoint.frame_b, frontBar.frame_a) annotation(
+        Line(points = {{-42, -82}, {-34, -82}}, color = {95, 95, 95}));
+      connect(frontBar.frame_b, rearBar.frame_a) annotation(
+        Line(points = {{-14, -82}, {-14, -68}, {-22, -68}, {-22, -56}}));
+      connect(upper.frame_b, MacPherson.frame_b) annotation(
+        Line(points = {{-68, 48}, {-44, 48}, {-44, 38}}, color = {95, 95, 95}));
+      connect(frontBar.frame_b, MacPherson.frame_a) annotation(
+        Line(points = {{-14, -82}, {-12, -82}, {-12, -38}, {-44, -38}, {-44, -2}}, color = {95, 95, 95}));
+      connect(frame_C, upper.frame_a) annotation(
+        Line(points = {{-100, 0}, {-88, 0}, {-88, 48}}));
+      connect(frame_C, lower.frame_a) annotation(
+        Line(points = {{-100, 0}, {-88, 0}, {-88, -82}}));
+      connect(MacPherson.frame_ib, struct.frame_a) annotation(
+        Line(points = {{-24, 34}, {-10, 34}}, color = {95, 95, 95}));
+      connect(struct.frame_b, springRod.frame_b) annotation(
+        Line(points = {{10, 34}, {17, 34}, {17, 12}}));
+      connect(MacPherson.frame_ia, jointSSR.frame_b) annotation(
+        Line(points = {{-24, 2}, {-24, -30}, {54, -30}, {54, 26}}));
+      connect(springRod.frame_a, jointSSR.frame_ib) annotation(
+        Line(points = {{17, -22}, {17, -50}, {34, -50}, {34, 4}, {34, 30}}, color = {95, 95, 95}));
+      connect(jointSSR.frame_a, frame_S) annotation(
+        Line(points = {{54, 66}, {0, 66}, {0, 100}, {0, 100}}, color = {95, 95, 95}));
+  connect(rotRod.frame_b, frame_U) annotation(
+        Line(points = {{84, -80}, {84, 0}, {100, 0}}, color = {95, 95, 95}));
   connect(springRod.frame_a, outerRod.frame_a) annotation(
-        Line(points = {{17, -22}, {17, -50}, {66, -50}, {66, 0}}, color = {95, 95, 95}));
-    connect(frame_C, upper.frame_a) annotation(
-      Line(points = {{-100, 0}, {-88, 0}, {-88, 48}}));
-    connect(frame_C, lower.frame_a) annotation(
-      Line(points = {{-100, 0}, {-88, 0}, {-88, -82}}));
-    connect(MacPherson.frame_ib, struct.frame_a) annotation(
-      Line(points = {{-24, 34}, {-10, 34}}, color = {95, 95, 95}));
-    connect(struct.frame_b, springRod.frame_b) annotation(
-      Line(points = {{10, 34}, {17, 34}, {17, 12}}));
-  connect(outerRod.frame_b, frame_U) annotation(
-        Line(points = {{86, 0}, {100, 0}}, color = {95, 95, 95}));
-    connect(MacPherson.frame_ia, jointSSR.frame_b) annotation(
-      Line(points = {{-24, 2}, {-24, -30}, {54, -30}, {54, 26}}));
-    connect(springRod.frame_a, jointSSR.frame_ib) annotation(
-      Line(points = {{17, -22}, {17, -50}, {34, -50}, {34, 4}, {34, 30}}, color = {95, 95, 95}));
-    connect(jointSSR.frame_a, frame_S) annotation(
-      Line(points = {{54, 66}, {0, 66}, {0, 100}, {0, 100}}, color = {95, 95, 95}));
-  end MacPherson;
+        Line(points = {{36, -64}, {35.875, -64}, {35.875, -42}, {27.75, -42}, {27.75, -54}, {25.5, -54}, {25.5, -66}, {35, -66}, {35, -80}, {34, -80}}, color = {95, 95, 95}));
+  connect(outerRod.frame_b, rotRod.frame_a) annotation(
+        Line(points = {{54, -80}, {64, -80}}, color = {95, 95, 95}));
+  connect(upper.frame_b, debug.frame_a) annotation(
+        Line(points = {{-68, 48}, {-68, 32}}, color = {95, 95, 95}));
+    end MacPherson;
 
 
   model MacPherson2
@@ -442,7 +453,7 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
       parameter SI.Position rRL_1[3] = {-0.16, 0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
       parameter SI.Position rRL_2[3] = {-0.16, -0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
       VehicleDynamics.Suspensions.Components.MacPherson macPherson annotation(
-        Placement(visible = true, transformation(origin = {18, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+        Placement(visible = true, transformation(origin = {8, -22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = rRFrame) annotation(
         Placement(visible = true, transformation(origin = {-74, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
       Modelica.Blocks.Sources.Ramp ramp(height = 0.1) annotation(
@@ -451,8 +462,10 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
         Placement(visible = true, transformation(origin = {-38, 24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
       Modelica.Mechanics.Translational.Sources.Position position annotation(
         Placement(visible = true, transformation(origin = {-42, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Modelica.Mechanics.MultiBody.Parts.Body body(I_11 = 1, I_22 = 1, I_33 = 1, animation = true, m = 1) annotation(
-        Placement(visible = true, transformation(origin = {60, -18}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation1(animation = true, r = {0, 1, 0}) annotation(
+        Placement(visible = true, transformation(origin = {46, -22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Wheels.RillTyre.Wheel wheel annotation(
+        Placement(visible = true, transformation(origin = {88, -22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     protected
       parameter SI.Position rRFrame[3] = (rRL_1 + rRL_2) / 2;
     equation
@@ -463,13 +476,15 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
       connect(world.frame_b, fixedTranslation.frame_a) annotation(
         Line(points = {{-68, -76}, {-84, -76}, {-84, 22}, {-84, 22}, {-84, 22}}, color = {95, 95, 95}));
       connect(world.frame_b, macPherson.frame_C) annotation(
-        Line(points = {{-68, -76}, {-31, -76}, {-31, -72}, {2, -72}, {2, -18}, {8, -18}}));
+        Line(points = {{-68, -76}, {-31, -76}, {-31, -72}, {-2, -72}, {-2, -22}}));
       connect(fixedTranslation.frame_b, prismatic.frame_a) annotation(
         Line(points = {{-64, 22}, {-48, 22}, {-48, 24}, {-48, 24}}, color = {95, 95, 95}));
       connect(prismatic.frame_b, macPherson.frame_S) annotation(
-        Line(points = {{-28, 24}, {18, 24}, {18, -8}, {18, -8}}, color = {95, 95, 95}));
-      connect(macPherson.frame_U, body.frame_a) annotation(
-        Line(points = {{28, -18}, {50, -18}, {50, -18}, {50, -18}}, color = {95, 95, 95}));
+        Line(points = {{-28, 24}, {8, 24}, {8, -12}}, color = {95, 95, 95}));
+      connect(macPherson.frame_U, fixedTranslation1.frame_a) annotation(
+        Line(points = {{18, -22}, {36, -22}}));
+  connect(fixedTranslation1.frame_b, wheel.carrierFrame) annotation(
+        Line(points = {{56, -22}, {78, -22}, {78, -22}, {78, -22}}));
     end MacPhersonBasic;
 
     model FiveLinkBasic "Description"

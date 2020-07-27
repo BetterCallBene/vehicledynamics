@@ -76,11 +76,11 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
 
     record MacPherson
       extends Modelica.Icons.Record;
-      replaceable parameter VehicleDynamics.Suspensions.ParameterSets.Components.MacPherson macPherson_LF(fc = 1200.0, fd = 20000.0,q0S = 3516 / 20000, rCL1 = {-0.0075, 0.3753, -0.0358}, rCL2 = {-0.3175, 0.3535, -0.02735}, rCS = {-0.0291, 0.541, 0.561}, rRL = {-0.164, 0.3047, 0.0945}, rRL3 = {-0.164, 0.3047, 0.0945}, rUL1L2 = {0.0058556, 0.69905, -0.0725}, rUL3 = {-0.1283, 0.643, 0.07344}, rUS = {-0.00012, 0.5791, 0.042}, rUW = {-0.00013, 0.725, 0.0450}, steeringRodLength = Modelica.Math.Vectors.length(macPherson_LF.rRL - (macPherson_LF.rRL + {1, -1, 1} .* macPherson_LF.rRL)/2))  annotation(
+      replaceable parameter VehicleDynamics.Suspensions.ParameterSets.Components.MacPherson macPhersonData_LF(fc = 1200.0, fd = 20000.0,q0S = 3516 / 20000, rCL1 = {-0.0075, 0.3753, -0.0358}, rCL2 = {-0.3175, 0.3535, -0.02735}, rCS = {-0.0291, 0.541, 0.561}, rRL = {-0.164, 0.3047, 0.0945}, rRL3 = {-0.164, 0.3047, 0.0945}, rUL1L2 = {0.0058556, 0.69905, -0.0725}, rUL3 = {-0.1283, 0.643, 0.07344}, rUS = {-0.00012, 0.5791, 0.042}, rUW = {-0.00013, 0.725, 0.0450}, steeringRodLength = Modelica.Math.Vectors.length(macPherson_LF.rRL - (macPherson_LF.rRL + {1, -1, 1} .* macPherson_LF.rRL)/2))  annotation(
         Placement(visible = true, transformation(origin = {-70, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    replaceable parameter VehicleDynamics.Suspensions.ParameterSets.Components.MacPherson macPherson_RF(fc = macPherson_LF.fc, fd = macPherson_LF.fd,q0S = macPherson_LF.q0S, rCL1 = {1, -1, 1} .* macPherson_LF.rCL1, rCL2 = {1, -1, 1} .* macPherson_LF.rCL2, rCS = {1, -1, 1} .* macPherson_LF.rCS, rRL = {1, -1, 1} .* macPherson_LF.rRL, rRL3 = {1, -1, 1} .* macPherson_LF.rRL3, rUL1L2 = {1, -1, 1} .* macPherson_LF.rUL1L2, rUL3 = {1, -1, 1} .* macPherson_LF.rUL3, rUS = {1, -1, 1} .* macPherson_LF.rUS, rUW = {1, -1, 1} .* macPherson_LF.rUW, steeringRodLength = macPherson_LF.steeringRodLength) annotation(
+    replaceable parameter VehicleDynamics.Suspensions.ParameterSets.Components.MacPherson macPhersonData_RF(fc = macPherson_LF.fc, fd = macPherson_LF.fd,q0S = macPherson_LF.q0S, rCL1 = {1, -1, 1} .* macPherson_LF.rCL1, rCL2 = {1, -1, 1} .* macPherson_LF.rCL2, rCS = {1, -1, 1} .* macPherson_LF.rCS, rRL = {1, -1, 1} .* macPherson_LF.rRL, rRL3 = {1, -1, 1} .* macPherson_LF.rRL3, rUL1L2 = {1, -1, 1} .* macPherson_LF.rUL1L2, rUL3 = {1, -1, 1} .* macPherson_LF.rUL3, rUS = {1, -1, 1} .* macPherson_LF.rUS, rUW = {1, -1, 1} .* macPherson_LF.rUW, steeringRodLength = macPherson_LF.steeringRodLength) annotation(
         Placement(visible = true, transformation(origin = {70, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  replaceable parameter VehicleDynamics.Steering.ParameterSets.RackSteering rackSteering annotation(
+  replaceable parameter VehicleDynamics.Steering.ParameterSets.RackSteering rackSteeringData annotation(
         Placement(visible = true, transformation(origin = {0, 32}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     equation
       
@@ -134,26 +134,32 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
   end FiveLink;
 
   model MacPherson "Description"
-  VehicleDynamics.Suspensions.Components.MacPherson macPherson_LF annotation(
+  replaceable parameter ParameterSets.Components.MacPherson macPhersonData_LF(fc = 1200.0, fd = 20000.0, q0S = 3516 / 20000, rCL1 = {-0.0075, 0.3753, -0.0358}, rCL2 = {-0.3175, 0.3535, -0.02735}, rCS = {-0.0291, 0.541, 0.561}, rRL = {-0.164, 0.3047, 0.0945}, rRL3 = {-0.164, 0.3047, 0.0945}, rUL1L2 = {0.0058556, 0.69905, -0.0725}, rUL3 = {-0.1283, 0.643, 0.07344}, rUS = {-0.00012, 0.5791, 0.042}, rUW = {-0.00013, 0.725, 0.0450}, steeringRodLength = Modelica.Math.Vectors.length(macPhersonData_LF.rRL - (macPhersonData_LF.rRL + {1, -1, 1} .* macPhersonData_LF.rRL) / 2)) annotation(
+          Placement(visible = true, transformation(origin = {-70, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    replaceable parameter ParameterSets.Components.MacPherson macPhersonData_RF(fc = macPhersonData_LF.fc, fd = macPhersonData_LF.fd, q0S = macPhersonData_LF.q0S, rCL1 = {1, -1, 1} .* macPhersonData_LF.rCL1, rCL2 = {1, -1, 1} .* macPhersonData_LF.rCL2, rCS = {1, -1, 1} .* macPhersonData_LF.rCS, rRL = {1, -1, 1} .* macPhersonData_LF.rRL, rRL3 = {1, -1, 1} .* macPhersonData_LF.rRL3, rUL1L2 = {1, -1, 1} .* macPhersonData_LF.rUL1L2, rUL3 = {1, -1, 1} .* macPhersonData_LF.rUL3, rUS = {1, -1, 1} .* macPhersonData_LF.rUS, rUW = {1, -1, 1} .* macPhersonData_LF.rUW, steeringRodLength = macPhersonData_LF.steeringRodLength) annotation(
+          Placement(visible = true, transformation(origin = {70, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    replaceable parameter VehicleDynamics.Steering.ParameterSets.RackSteering rackSteeringData annotation(
+          Placement(visible = true, transformation(origin = {-2, 74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.MacPherson macPherson_LF(macPhersonData = macPhersonData_LF)  annotation(
       Placement(visible = true, transformation(origin = {-48, 20}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
-  VehicleDynamics.Steering.RackSteering rackSteering  annotation(
+  VehicleDynamics.Steering.RackSteering rackSteering(rRL_LF = macPhersonData_LF.rRL, rRL_RF = macPhersonData_RF.rRL, rackSteeringData = rackSteeringData)  annotation(
       Placement(visible = true, transformation(origin = {0, 50}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
   Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_Wheel_L annotation(
       Placement(visible = true, transformation(origin = {-100, 20}, extent = {{-16, -16}, {16, 16}}, rotation = 0), iconTransformation(origin = {-100, 20}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
   Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_C annotation(
       Placement(visible = true, transformation(origin = {0, -98}, extent = {{-16, -16}, {16, 16}}, rotation = 90), iconTransformation(origin = {0, -98}, extent = {{-16, -16}, {16, 16}}, rotation = 90)));
-  VehicleDynamics.Suspensions.Components.MacPherson macPherson_RF(leftMacPherson = false)  annotation(
+  VehicleDynamics.Suspensions.Components.MacPherson macPherson_RF(leftMacPherson=false, macPhersonData = macPhersonData_RF)  annotation(
       Placement(visible = true, transformation(origin = {52, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_Wheel_R annotation(
       Placement(visible = true, transformation(origin = {100, 20}, extent = {{-16, -16}, {16, 16}}, rotation = 0), iconTransformation(origin = {100, 20}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
   equation
-    connect(rackSteering.frame_C, frame_C) annotation(
+  connect(rackSteering.frame_C, frame_C) annotation(
       Line(points = {{0, 40}, {0, -98}}));
     connect(macPherson_LF.frame_U, frame_Wheel_L) annotation(
       Line(points = {{-58, 20}, {-100, 20}}, color = {95, 95, 95}));
-    connect(macPherson_LF.frame_C, frame_C) annotation(
+  connect(macPherson_LF.frame_C, frame_C) annotation(
       Line(points = {{-38, 20}, {0, 20}, {0, -98}, {0, -98}}));
-    connect(macPherson_RF.frame_C, frame_C) annotation(
+  connect(macPherson_RF.frame_C, frame_C) annotation(
       Line(points = {{42, 20}, {0, 20}, {0, -98}}, color = {95, 95, 95}));
     connect(macPherson_RF.frame_U, frame_Wheel_R) annotation(
       Line(points = {{62, 20}, {100, 20}}, color = {95, 95, 95}));
@@ -378,71 +384,16 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
   end Components;
 
   package Tests "Tests of suspensions"
-    model MacPhersonBasic "Description"
-      import SI = Modelica.SIunits;
-      inner Modelica.Mechanics.MultiBody.World world annotation(
-        Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      parameter SI.Position rRL_1[3] = {-0.16, 0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
-      parameter SI.Position rRL_2[3] = {-0.16, -0.54, 0} "|Geometry| Unstretched additional spring length of the strut, compared to the construction geometry";
-      VehicleDynamics.Suspensions.Components.MacPherson macPherson annotation(
-        Placement(visible = true, transformation(origin = {8, -22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = rRFrame) annotation(
-        Placement(visible = true, transformation(origin = {-74, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Modelica.Blocks.Sources.Ramp ramp(height = 0.1) annotation(
-        Placement(visible = true, transformation(origin = {-88, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Modelica.Mechanics.MultiBody.Joints.Prismatic prismatic(animation = true, n = rRL_1 - rRL_2, useAxisFlange = true) annotation(
-        Placement(visible = true, transformation(origin = {-38, 24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Modelica.Mechanics.Translational.Sources.Position position annotation(
-        Placement(visible = true, transformation(origin = {-42, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation1(animation = true, r = {0, 1, 0}) annotation(
-        Placement(visible = true, transformation(origin = {46, -22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Wheels.RillTyre.Wheel wheel annotation(
-        Placement(visible = true, transformation(origin = {88, -22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    protected
-      parameter SI.Position rRFrame[3] = (rRL_1 + rRL_2) / 2;
-    equation
-      connect(ramp.y, position.s_ref) annotation(
-        Line(points = {{-76, 80}, {-54, 80}, {-54, 80}, {-54, 80}}, color = {0, 0, 127}));
-      connect(position.flange, prismatic.axis) annotation(
-        Line(points = {{-32, 80}, {-32, 55}, {-30, 55}, {-30, 30}}, color = {0, 127, 0}));
-      connect(world.frame_b, fixedTranslation.frame_a) annotation(
-        Line(points = {{-68, -76}, {-84, -76}, {-84, 22}, {-84, 22}, {-84, 22}}, color = {95, 95, 95}));
-      connect(world.frame_b, macPherson.frame_C) annotation(
-        Line(points = {{-68, -76}, {-31, -76}, {-31, -72}, {-2, -72}, {-2, -22}}));
-      connect(fixedTranslation.frame_b, prismatic.frame_a) annotation(
-        Line(points = {{-64, 22}, {-48, 22}, {-48, 24}, {-48, 24}}, color = {95, 95, 95}));
-      connect(prismatic.frame_b, macPherson.frame_S) annotation(
-        Line(points = {{-28, 24}, {8, 24}, {8, -12}}, color = {95, 95, 95}));
-      connect(macPherson.frame_U, fixedTranslation1.frame_a) annotation(
-        Line(points = {{18, -22}, {36, -22}}));
-  connect(fixedTranslation1.frame_b, wheel.carrierFrame) annotation(
-        Line(points = {{56, -22}, {78, -22}, {78, -22}, {78, -22}}));
-    end MacPhersonBasic;
-
-    model FiveLinkBasic "Description"
-      inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
-        Placement(visible = true, transformation(origin = {-68, -32}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Modelica.Mechanics.MultiBody.Parts.Body body(I_11 = 1, I_22 = 1, I_33 = 1, animation = false, m = 1, r_CM = {0, 0, 0}) annotation(
-        Placement(visible = true, transformation(origin = {86, 2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Components.FiveLink fiveLink annotation(
-        Placement(visible = true, transformation(origin = {-14, 10}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    equation
-      connect(world.frame_b, fiveLink.frame_C) annotation(
-        Line(points = {{-58, -32}, {-24, -32}, {-24, 10}, {-24, 10}}, color = {95, 95, 95}));
-      connect(fiveLink.frame_U, body.frame_a) annotation(
-        Line(points = {{-4, 10}, {72, 10}, {72, 2}, {76, 2}, {76, 2}}, color = {95, 95, 95}));
-    end FiveLinkBasic;
-
-    model MacPhersonBasic2
+    model MacPherson
     VehicleDynamics.Suspensions.MacPherson macPherson annotation(
         Placement(visible = true, transformation(origin = {-2, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  inner Modelica.Mechanics.MultiBody.World world annotation(
+    inner Modelica.Mechanics.MultiBody.World world annotation(
         Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Wheels.RillTyre.Wheel wheel_RF(leftWheel = false)  annotation(
+    VehicleDynamics.Wheels.RillTyre.Wheel wheel_RF(leftWheel = false)  annotation(
         Placement(visible = true, transformation(origin = {58, 2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Wheels.RillTyre.Wheel wheel_LF annotation(
+    VehicleDynamics.Wheels.RillTyre.Wheel wheel_LF annotation(
         Placement(visible = true, transformation(origin = {-68, 2}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(r = {0, 0, 1.0}) annotation(
+    Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(r = {0, 0, 1.0}) annotation(
         Placement(visible = true, transformation(origin = {-4, -50}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     equation
       connect(macPherson.frame_Wheel_R, wheel_RF.carrierFrame) annotation(
@@ -453,28 +404,6 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
         Line(points = {{6, -50}, {-2, -50}, {-2, -10}}));
       connect(world.frame_b, fixedTranslation.frame_a) annotation(
         Line(points = {{-68, -76}, {-14, -76}, {-14, -50}, {-14, -50}}, color = {95, 95, 95}));
-    end MacPhersonBasic2;
-
-    model FiveLinkBasic2
-      VehicleDynamics.Suspensions.FiveLink fiveLink annotation(
-        Placement(visible = true, transformation(origin = {0, 10}, extent = {{-10, 10}, {10, -10}}, rotation = 0)));
-      inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
-        Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(animation = false, r = {0, 0, 1})  annotation(
-        Placement(visible = true, transformation(origin = {-10, -40}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Wheels.RillTyre.Wheel wheel(leftWheel = false)  annotation(
-        Placement(visible = true, transformation(origin = {64, 10}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Wheels.RillTyre.Wheel wheel1 annotation(
-        Placement(visible = true, transformation(origin = {-52, 10}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
-  equation
-      connect(world.frame_b, fixedTranslation.frame_a) annotation(
-        Line(points = {{-68, -76}, {-20, -76}, {-20, -40}}, color = {95, 95, 95}));
-      connect(fixedTranslation.frame_b, fiveLink.frame_C) annotation(
-        Line(points = {{0, -40}, {0, 0}}, color = {95, 95, 95}));
-  connect(fiveLink.frame_R, wheel.carrierFrame) annotation(
-        Line(points = {{10, 10}, {54, 10}, {54, 10}, {54, 10}}));
-  connect(fiveLink.frame_L, wheel1.carrierFrame) annotation(
-        Line(points = {{-10, 10}, {-42, 10}, {-42, 10}, {-42, 10}}, color = {95, 95, 95}));
-    end FiveLinkBasic2;
+    end MacPherson;
   end Tests;
 end Suspensions;

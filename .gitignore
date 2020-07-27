@@ -1,0 +1,11 @@
+.venv
+.ipynb_checkpoints
+# *.c
+# *.libs
+# *.log
+# *.makefile
+# *.o
+# *.h
+# *.json
+# *.mat
+# *.xml

@@ -3,6 +3,4 @@ image: git.koenigbk.de:4567/modelica/docker-openmodelica-python:latest
 build:
     stage: build
     script:
-        - mkdir build
-        - cd build
-        - omc ../scripts/checkModel.mos
+        - source scripts/checkModel.sh

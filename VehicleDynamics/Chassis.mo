@@ -14,11 +14,11 @@ package Chassis "Description"
             "|Mass and Inertia|Vector from frame_a to center of mass, resolved in frame_a";
             parameter SI.Inertia i11B = 500  "|Body|(1,1) element of inertia tensor";
             parameter SI.Inertia i22B = 1500 "|Body|(2,2) element of inertia tensor";
-            parameter SI.Inertia i33B = 1800 "|Body|(3,3) element of inertia tensor"
+            parameter SI.Inertia i33B = 1800 "|Body|(3,3) element of inertia tensor";
             
             parameter SI.Inertia i21B=0.0 "|Body|(2,1) element of inertia tensor";
             parameter SI.Inertia i31B=0.0 "|Body|(3,1) element of inertia tensor";
-            parameter SI.Inertia i32B=0.0 "|Body|(3,2) element of inertia tensor";
+            parameter SI.Inertia i32B=0.0 "|Body|(3,2) element of inertia tensor"
         
         end SedanBody;
     end ParameterSets;

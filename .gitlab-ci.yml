@@ -1,0 +1,6 @@
+image: git.koenigbk.de:4567/modelica/docker-openmodelica-python:latest
+
+build:
+    stage: build
+    script:
+        - python3 ./build.py

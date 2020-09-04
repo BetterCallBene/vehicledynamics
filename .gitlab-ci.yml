@@ -3,6 +3,5 @@ image: git.koenigbk.de:4567/modelica/docker-openmodelica-python:latest
 build:
     stage: build
     script:
-        - cd build
-        - rm -rf *
+        - mkdir build
         - omc ../scripts/checkModel.mos

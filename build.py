@@ -73,36 +73,36 @@ class ModelicaSystem(object):
         return self.__isopen
 
     
-class TestModelicaSystem(unittest.TestCase):
+# class TestModelicaSystem(unittest.TestCase):
 
-    def setUp(self):
-        self.modelName = "VehicleDynamics.Suspensions.Tests.MacPherson"
-        workingDirectory = 'build'
-        packageFolder = os.path.join('..', 'VehicleDynamics')
-        packageFile = os.path.join(packageFolder, 'package.mo')
-        self.packageFile = os.path.abspath(packageFile)
-        if os.path.isdir(workingDirectory):
-            shutil.rmtree(workingDirectory) 
-        os.mkdir(workingDirectory)
-        os.chdir(workingDirectory)
+#     def setUp(self):
+#         self.modelName = "VehicleDynamics.Suspensions.Tests.MacPherson"
+#         workingDirectory = 'build'
+#         packageFolder = os.path.join('..', 'VehicleDynamics')
+#         packageFile = os.path.join(packageFolder, 'package.mo')
+#         self.packageFile = os.path.abspath(packageFile)
+#         if os.path.isdir(workingDirectory):
+#             shutil.rmtree(workingDirectory) 
+#         os.mkdir(workingDirectory)
+#         os.chdir(workingDirectory)
 
-    def test_initializition(self):
-        mc = ModelicaSystem(self.packageFile)
-        self.assertEqual(mc.is_open, False)
-        mc.open()
-        self.assertEqual(mc.is_open, True)
-        mc.close()
-        self.assertEqual(mc.is_open, False)
+#     def test_initializition(self):
+#         mc = ModelicaSystem(self.packageFile)
+#         self.assertEqual(mc.is_open, False)
+#         mc.open()
+#         self.assertEqual(mc.is_open, True)
+#         mc.close()
+#         self.assertEqual(mc.is_open, False)
 
-    def test_connext_manager(self):
-        mc = ModelicaSystem(self.packageFile)
-        with mc:
-            self.assertEqual(mc.is_open, True)
-        self.assertEqual(mc.is_open, False)
+#     def test_connext_manager(self):
+#         mc = ModelicaSystem(self.packageFile)
+#         with mc:
+#             self.assertEqual(mc.is_open, True)
+#         self.assertEqual(mc.is_open, False)
 
-    def test_build(self):
-        with ModelicaSystem(self.packageFile) as mc:
-            mc.buildModel(self.modelName)      
+#     def test_build(self):
+#         with ModelicaSystem(self.packageFile) as mc:
+#             mc.buildModel(self.modelName)      
             
 def build():
     modelName = "VehicleDynamics.Suspensions.Tests.MacPherson"
@@ -126,5 +126,5 @@ def build():
         sys.exit(1)
 
     
-# if __name__ == "__main__":
-#     build()
+if __name__ == "__main__":
+    build()

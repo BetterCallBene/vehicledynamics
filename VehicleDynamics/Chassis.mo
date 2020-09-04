@@ -18,7 +18,7 @@ package Chassis "Description"
             
             parameter SI.Inertia i21B=0.0 "|Body|(2,1) element of inertia tensor";
             parameter SI.Inertia i31B=0.0 "|Body|(3,1) element of inertia tensor";
-            parameter SI.Inertia i32B=0.0 "|Body|(3,2) element of inertia tensor"
+            parameter SI.Inertia i32B=0.0 "|Body|(3,2) element of inertia tensor";
         
         end SedanBody;
     end ParameterSets;

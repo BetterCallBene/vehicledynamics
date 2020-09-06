@@ -1,9 +1,7 @@
 loadModel(Modelica);getErrorString();
-loadFile("package.mo");getErrorString();
-loadFile("Environments.mo");getErrorString();
-loadFile("Wheels.mo");getErrorString();
-loadFile("Suspensions.mo");getErrorString();
-checkModel(VehicleDynamics.Suspensions.MacPherson);getErrorString();
+loadFile("../VehicleDynamics/package.mo");getErrorString();
+buildModel(VehicleDynamics.Suspensions.Tests.MacPherson);getErrorString();
+// checkModel(VehicleDynamics.Suspensions.MacPherson);getErrorString();
 // checkModel(VehicleDynamics.Environments.NoGraphicsRoad);getErrorString();
 // checkModel(VehicleDynamics.Wheels.Data);getErrorString();
 // checkModel(VehicleDynamics.Wheels.BaseWheel);getErrorString();

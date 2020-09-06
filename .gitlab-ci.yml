@@ -1,0 +1,10 @@
+image: git.koenigbk.de:4567/modelica/docker-openmodelica-python:latest
+
+build:
+    stage: build
+    script:
+        - source scripts/checkModel.sh
+    artifacts:
+      paths:
+        - build/
+      expire_in: 1 week

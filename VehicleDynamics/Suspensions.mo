@@ -134,11 +134,11 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
   end FiveLink;
 
   model MacPherson "Description"
-  replaceable parameter ParameterSets.Components.MacPherson macPhersonData_LF(fc = 1200.0, fd = 2000000.0, q0S = 3516 / 20000, rCL1 = {-0.0075, 0.3753, -0.0358}, rCL2 = {-0.3175, 0.3535, -0.02735}, rCS = {-0.0291, 0.541, 0.561}, rRL = {-0.164, 0.3047, 0.0945}, rRL3 = {-0.164, 0.3047, 0.0945}, rUL1L2 = {0.0058556, 0.69905, -0.0725}, rUL3 = {-0.1283, 0.643, 0.07344}, rUS = {-0.00012, 0.5791, 0.042}, rUW = {-0.00013, 0.725, 0.0450}, steeringRodLength = Modelica.Math.Vectors.length(macPhersonData_LF.rRL - (macPhersonData_LF.rRL + {1, -1, 1} .* macPhersonData_LF.rRL) / 2)) annotation(
+  replaceable parameter ParameterSets.Components.MacPherson macPhersonData_LF(fc = 1200.0, fd = 2000000.0, q0S = 3516 / 20000, rCL1 = {-0.0075, 0.3753, -0.0358}, rCL2 = {-0.3175, 0.3535, -0.02735}, rCS = {-0.0291, 0.541, 0.561}, rRL = {-0.164, 0.3047, 0.0945}, rRL3 = {-0.164, 0.3047, 0.0945}, rUL1L2 = {0.0058556, 0.69905, -0.0725}, rUL3 = {-0.1283, 0.643, 0.07344}, rUS = {-0.00012, 0.5791, 0.042}, rUW = {-0.00013, 0.725, 0.0450}, steeringRodLength = Modelica.Math.Vectors.length(macPhersonData_LF.rRL - (macPhersonData_LF.rRL + {1, -1, 1} .* macPhersonData_LF.rRL) / 2) + 0.01) annotation(
           Placement(visible = true, transformation(origin = {-70, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     replaceable parameter ParameterSets.Components.MacPherson macPhersonData_RF(fc = macPhersonData_LF.fc, fd = macPhersonData_LF.fd, q0S = macPhersonData_LF.q0S, rCL1 = {1, -1, 1} .* macPhersonData_LF.rCL1, rCL2 = {1, -1, 1} .* macPhersonData_LF.rCL2, rCS = {1, -1, 1} .* macPhersonData_LF.rCS, rRL = {1, -1, 1} .* macPhersonData_LF.rRL, rRL3 = {1, -1, 1} .* macPhersonData_LF.rRL3, rUL1L2 = {1, -1, 1} .* macPhersonData_LF.rUL1L2, rUL3 = {1, -1, 1} .* macPhersonData_LF.rUL3, rUS = {1, -1, 1} .* macPhersonData_LF.rUS, rUW = {1, -1, 1} .* macPhersonData_LF.rUW, steeringRodLength = macPhersonData_LF.steeringRodLength) annotation(
           Placement(visible = true, transformation(origin = {70, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    replaceable parameter VehicleDynamics.Steering.ParameterSets.RackSteering rackSteeringData annotation(
+    replaceable parameter VehicleDynamics.Steering.ParameterSets.RackSteering rackSteeringData  annotation(
           Placement(visible = true, transformation(origin = {-2, 74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   VehicleDynamics.Suspensions.Components.MacPherson macPherson_LF(macPhersonData = macPhersonData_LF)  annotation(
       Placement(visible = true, transformation(origin = {-48, 20}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
@@ -267,9 +267,9 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
       Placement(visible = true, transformation(origin = {44, -80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   replaceable parameter ParameterSets.Components.MacPherson macPhersonData annotation(
       Placement(visible = true, transformation(origin = {-76, 86}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    //parameter Real angleBetweenBreaksAndSuspension = To_deg(Math.asin(Math.Vectors.norm(cross(rS, {0, 0, 1}))/ Math.Vectors.norm(rS)));
-  //Modelica.Mechanics.MultiBody.Parts.FixedRotation rotRod(angle = if leftMacPherson then -angleBetweenBreaksAndSuspension else angleBetweenBreaksAndSuspension, n = {1, 0, 0}, rotationType = Modelica.Mechanics.MultiBody.Types.RotationTypes.RotationAxis) annotation(
-    //    Placement(visible = true, transformation(origin = {74, -80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    parameter SI.Position rS_helper_x[3] = {0, rS[2], rS[3]};
+    Modelica.Mechanics.MultiBody.Parts.FixedRotation rotRod_x(angle = if leftMacPherson then - angleBetweenBreaksAndSuspension_x else angleBetweenBreaksAndSuspension_x, n = {1, 0, 0}, rotationType = Modelica.Mechanics.MultiBody.Types.RotationTypes.RotationAxis) annotation(Placement(visible = true, transformation(origin = {74, -80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    parameter Real angleBetweenBreaksAndSuspension_x = To_deg(Math.asin(Math.Vectors.norm(cross(rS_helper_x, {0, 0, 1}))/ Math.Vectors.norm(rS_helper_x)));
     parameter SI.Position rS[3] = macPhersonData.rCS - macPhersonData.rUL1L2;
   Modelica.Mechanics.MultiBody.Parts.FixedTranslation debug(r = macPhersonData.rUW - macPhersonData.rCS)  annotation(
         Placement(visible = true, transformation(origin = {-68, 22}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
@@ -302,11 +302,11 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
         Line(points = {{17, -22}, {17, -50}, {34, -50}, {34, 4}, {34, 30}}, color = {95, 95, 95}));
       connect(jointSSR.frame_a, frame_S) annotation(
         Line(points = {{54, 66}, {0, 66}, {0, 100}, {0, 100}}, color = {95, 95, 95}));
-  //connect(rotRod.frame_b, frame_U) annotation(
-    //    Line(points = {{84, -80}, {84, 0}, {100, 0}}, color = {95, 95, 95}));
+    connect(rotRod_x.frame_b, frame_U) annotation(
+        Line(points = {{84, -80}, {84, 0}, {100, 0}}, color = {95, 95, 95}));
   connect(springRod.frame_a, outerRod.frame_a) annotation(
         Line(points = {{36, -64}, {35.875, -64}, {35.875, -42}, {27.75, -42}, {27.75, -54}, {25.5, -54}, {25.5, -66}, {35, -66}, {35, -80}, {34, -80}}, color = {95, 95, 95}));
-  connect(outerRod.frame_b, frame_U) annotation(
+  connect(outerRod.frame_b, rotRod_x.frame_a) annotation(
         Line(points = {{54, -80}, {64, -80}}, color = {95, 95, 95}));
   connect(upper.frame_b, debug.frame_a) annotation(
         Line(points = {{-68, 48}, {-68, 32}}, color = {95, 95, 95}));

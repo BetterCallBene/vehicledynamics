@@ -502,8 +502,7 @@ package Wheels "Wheel, tyre and road models"
 
     model Wheel
       import SI = Modelica.SIunits;
-      extends BaseWheel(redeclare ParameterSets.RillTyre.Wheel wheelData,
-        wheel_body.animation = false);
+      extends BaseWheel(redeclare ParameterSets.RillTyre.Wheel wheelData, wheel_body.animation = false, wheel_body.m = 100);
       //SLIP DEFINITION
       SI.Angle slipAngle "Angle between wheel axis velocity and the x-direction of the wheel";
       Real slip "slip at contact point computed with contact velocities";
@@ -539,28 +538,44 @@ package Wheels "Wheel, tyre and road models"
       Real delta_diff_pos;
       Real delta_x_scaled "delta_x scaled on nominal value";
       Real delta_y_scaled "delta_y scaled on nominal value";
-      Real S_rel[3, 3];
+      Real cylinderDiameter = 2 * wheelData.R0;
+      SI.Distance cylinderLength=world.defaultJointLength "Length of cylinder representing the joint axis";
+      Modelica.Mechanics.MultiBody.Frames.Orientation R_rel, R;
+      outer Modelica.Mechanics.MultiBody.World world;
     
-      Modelica.Mechanics.MultiBody.Visualizers.FixedShape Tire(extra = 1.0, height = 2 * wheelData.R0, length = abs(wheelData.width), lengthDirection = nShape, shapeType = "cylinder", width = 2 * wheelData.R0, widthDirection = {1, 0, 0}) annotation(
-        Placement(visible = true, transformation(origin = {52, -36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Wheels.RillTyre.TyreForces tyre annotation(
+    //  Modelica.Mechanics.MultiBody.Visualizers.FixedShape Tire(extra = 1.0, height = 2 * wheelData.R0, length = abs(wheelData.width), lengthDirection = nShape, shapeType = "cylinder", width = 2 * wheelData.R0, widthDirection = {1, 0, 0}) annotation(
+    //    Placement(visible = true, transformation(origin = {52, -36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    VehicleDynamics.Wheels.RillTyre.TyreForces tyre annotation(
         Placement(visible = true, transformation(origin = {-86, 64}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape tire(
+    shapeType = "cylinder",
+    color=Modelica.Mechanics.MultiBody.Types.Defaults.JointColor,
+    specularCoefficient = world.defaultSpecularCoefficient,
+    length=cylinderLength,
+    width = cylinderDiameter,
+    height = cylinderDiameter,
+    lengthDirection = nShape,
+    widthDirection = {1, 0, 0},
+    r_shape=-nShape*(cylinderLength/2),
+    r = wheel_body.frame_a.r_0,
+    R = R
+    );
     protected
       parameter Real delta_x_nom = wheelData.load1.F_slide_x / wheelData.c_x "nominal tyre deflection in x-direction";
       parameter Real delta_y_nom = wheelData.load1.F_slide_y / wheelData.c_y "nominal tyre deflection in y-direction";
     equation
-//SLIP DEFINITION
-//slipAngle = Modelica.Math.atan2(Cv[2], noEvent(abs(Cv[1])));
+    //SLIP DEFINITION
+    //slipAngle = Modelica.Math.atan2(Cv[2], noEvent(abs(Cv[1])));
       slipAngle = Modelica.Math.atan2(Wv_y, Rw);
-//also possible slipAngle=Modelica.Math.atan2(Wv_y,Wv_x);
-/* Determine slip
+    //also possible slipAngle=Modelica.Math.atan2(Wv_y,Wv_x);
+    /* Determine slip
          Wv_abs: Absolute value of contact point velocity (= sqrt(Wv*Wv))
          phi   : Angle between longitudinal and lateral contact point velocity
                  Assumption: For Wv_abs small -> Wv_x = Wv_abs, Wv_y = 0, i.e.,
                              velocity only in longitudinal direction.
          sinphi: sin(phi) (= 0 for Wv_abs = 0)
          cosphi: cos(phi) (= -1 for Wv_abs = 0)
-  */
+    */
       Wv_abs = noEvent(max([sqrt(Wv_x * Wv_x + Wv_y * Wv_y); 1.e-10]));
       Rw = wheelData.R0 * abs(w) + 0.1;
       slip = Wv_abs / Rw;
@@ -572,13 +587,13 @@ package Wheels "Wheel, tyre and road models"
         sinphi = 0;
         cosphi = -1;
       end if;
-//TYRE FORCES AND TORQUES
+    //TYRE FORCES AND TORQUES
       delta_z = if delta_r >= 0 then delta_r else 0;
-// Compute  force perpendicular to contact plane.
+    // Compute  force perpendicular to contact plane.
       f_z = if delta_r >= 0 then wheelData.c_z * delta_z + wheelData.d_z * ddelta_r else 0;
-// Compute steady state tyre forces in x- and y-direction
-// (f0,f_x0,f_y0,df_ds,dL) = RillTyre.TyreForces(wheelData, slip, sinphi,
-//  cosphi, f_z, mueRoad, camberAngle);
+    // Compute steady state tyre forces in x- and y-direction
+    // (f0,f_x0,f_y0,df_ds,dL) = RillTyre.TyreForces(wheelData, slip, sinphi,
+    //  cosphi, f_z, mueRoad, camberAngle);
       tyre.slip = slip;
       tyre.sinphi = sinphi;
       tyre.cosphi = cosphi;
@@ -590,7 +605,7 @@ package Wheels "Wheel, tyre and road models"
       tyre.f_y0 = f_y0;
       tyre.df_ds = df_ds;
       tyre.dL = dL;
-// Compute data for tyre deflection differential equations
+    // Compute data for tyre deflection differential equations
       if noEvent(Wv_abs > v_eps) then
         dfx_dvx1 = -(df_ds * slip * cosphi * cosphi + f0 * sinphi * sinphi) / Wv_abs;
         dfy_dvy1 = -(df_ds * slip * sinphi * sinphi + f0 * cosphi * cosphi) / Wv_abs;
@@ -600,7 +615,7 @@ package Wheels "Wheel, tyre and road models"
       end if;
       dfx_dvx = if dfx_dvx1 <= 0 then dfx_dvx1 else 0;
       dfy_dvy = if dfy_dvy1 <= 0 then dfy_dvy1 else 0;
-/* Differential equations for tyre deflections in x- and y-direction
+    /* Differential equations for tyre deflections in x- and y-direction
            If the wheel angular velocity is too small, the prerequisites for the
            validity of the tyre force calculation are violated and the equations
            give wrong results. In such a case it is assumed that the profil
@@ -631,27 +646,26 @@ package Wheels "Wheel, tyre and road models"
       delta_x = delta_x_scaled * delta_x_nom;
       delta_y = delta_y_scaled * delta_y_nom;
       when change(contact) then
-// Tyre looses contact to ground or gets contact to ground
+    // Tyre looses contact to ground or gets contact to ground
         reinit(delta_x_scaled, 0);
         reinit(delta_y_scaled, 0);
       end when;
-// Compute dynamic tyre forces in x- and y-direction and tyre torque in z-direction
+    // Compute dynamic tyre forces in x- and y-direction and tyre torque in z-direction
       f_x = wheelData.c_x * delta_x + wheelData.d_x * der(delta_x);
       f_y = wheelData.c_y * delta_y + wheelData.d_y * der(delta_y);
       t_z = -Lcontact * dL * f_y;
-//FORCES AND MOMENTS REQUIRED BY THE BaseWheel
+    //FORCES AND MOMENTS REQUIRED BY THE BaseWheel
       F_x = f_x;
       F_y = f_y;
       F_z = f_z;
       M_x = 0;
-//this model is yet unable to generate overturning moment
+    //this model is yet unable to generate overturning moment
       M_y = 0;
-//and roll resistance torque.
+    //and roll resistance torque.
       M_z = t_z;
-//VISUAL REPRESENTATION OF TYRE AND RIM
-      S_rel = [nn] * transpose([nn]) + (identity(3) - [nn] * transpose([nn])) * cos(phi) - skew(nn) * sin(phi);
-      connect(hub.frame_b, Tire.frame_a) annotation(
-        Line(points = {{-12, 0}, {42, 0}, {42, -36}, {42, -36}}));
+      R_rel = Modelica.Mechanics.MultiBody.Frames.planarRotation(nShape, phi, der(phi));
+      R = Modelica.Mechanics.MultiBody.Frames.absoluteRotation(wheel_body.frame_a.R, R_rel);
+      //VISUAL REPRESENTATION OF TYRE AND RIM
       annotation(
         Documentation(info = "<html><head></head><body><div>This element contains the inertia properties of a</div><div>rotating wheel and the tyre forces acting at the</div><div>contact point of the wheel with the road. The tyre forces</div><div>are computed accorded to the equations of Rill (see reference below).</div><div>The wheel parameter is defined via the parameter set Wheel and the tire</div><div>parameter is defined via the parameter set RillTyre.StandardWheel.</div><div>Therefore, it suffices to define one instance of</div><div>these records and use them for all 4 wheels of a vehicle.</div><div>The frames of this object have the following meaning:</div><div>Frame carrierFrame is fixed in the carrier of the wheel</div><div>and is located on the spin axis of the wheel in the</div><div>middle point of the wheel. This point is also approximately</div><div>used as the center-of-mass of the wheel.</div><div>It is temporarily assumed that the road lies in the</div><div>x-y plane of the inertial frame! This restriction can</div><div>be removed by defining the road properties via inner/outer</div><div>functions.</div><div>Flange driveShaft is used to drive the wheel with</div><div>a 1D-drive train.</div><div>This element is realized according to the description</div><div>&nbsp; Georg Rill: Simulation von Kraftfahrzeugen,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Vieweg, 1994</div></body></html>"));
     end Wheel;

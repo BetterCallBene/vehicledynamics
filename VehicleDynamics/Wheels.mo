@@ -50,9 +50,9 @@ package Wheels "Wheel, tyre and road models"
         parameter Real c_x(unit = "N/m") = 100000 "tyre spring constant in x-direction";
         parameter Real c_y(unit = "N/m") = 150000 "tyre spring constant in y-direction";
         parameter Real c_z(unit = "N/m") = 200000 "tyre spring constant in z-direction";
-        parameter Real d_x(unit = "N.s/m") = 1500 "tyre damping constant in x-direction";
-        parameter Real d_y(unit = "N.s/m") = 300 "tyre damping constant in y-direction";
-        parameter Real d_z(unit = "N.s/m") = 300 "tyre damping constant in z-direction";
+        parameter Real d_x(unit = "N.s/m") = 15000 "tyre damping constant in x-direction";
+        parameter Real d_y(unit = "N.s/m") = 30000 "tyre damping constant in y-direction";
+        parameter Real d_z(unit = "N.s/m") = 30000 "tyre damping constant in z-direction";
         // Data for nominal vertical load 1
         parameter Real mue_nom = 0.7 "friction coefficient of road for which tyre data is valid";
         VehicleDynamics.Wheels.ParameterSets.RillTyre.NominalLoad load1 annotation(

@@ -1,6 +1,9 @@
 loadModel(Modelica);getErrorString();
 loadFile("../VehicleDynamics/package.mo");getErrorString();
 buildModel(VehicleDynamics.Suspensions.Tests.MacPherson);getErrorString();
+buildModel(VehicleDynamics.Steering.Tests.RackSteering);getErrorString();
+buildModel(VehicleDynamics.Chassis.StandardCar);getErrorString();
+//buildModel(VehicleDynamics.Suspensions.Chassis.StandardCar);getErrorString();
 // checkModel(VehicleDynamics.Suspensions.MacPherson);getErrorString();
 // checkModel(VehicleDynamics.Environments.NoGraphicsRoad);getErrorString();
 // checkModel(VehicleDynamics.Wheels.Data);getErrorString();

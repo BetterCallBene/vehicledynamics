@@ -44,13 +44,13 @@ VehicleDynamics.Suspensions.MacPherson macPherson annotation(
 inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
     Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 VehicleDynamics.Wheels.RillTyre.Wheel wheel_LF annotation(
-    Placement(visible = true, transformation(origin = {-66, 78}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+    Placement(visible = true, transformation(origin = {-62, 80}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
 VehicleDynamics.Wheels.RillTyre.Wheel wheel_RF(leftWheel = false) annotation(
     Placement(visible = true, transformation(origin = {60, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-Modelica.Mechanics.MultiBody.Parts.Body body(m = 100, r_0(start = {0, 0, 0.309}))  annotation(
+Modelica.Mechanics.MultiBody.Parts.Body body(m = 100, r_0(start = {0, 0, 0.26}))  annotation(
     Placement(visible = true, transformation(origin = {10, 46}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     Modelica.Mechanics.MultiBody.Parts.FixedTranslation leftRear(r = {-0.75, 0.70, 0.047})  annotation(
-      Placement(visible = true, transformation(origin = {-20, -10}, extent = {{10, -10}, {-10, 10}}, rotation = 90)));
+      Placement(visible = true, transformation(origin = {-50, -10}, extent = {{10, -10}, {-10, 10}}, rotation = 90)));
   Modelica.Mechanics.MultiBody.Parts.FixedTranslation rightRear(r = {-0.75, -0.70, 0.047})  annotation(
       Placement(visible = true, transformation(origin = {40, -10}, extent = {{10, -10}, {-10, 10}}, rotation = 90)));
   VehicleDynamics.Wheels.RillTyre.Wheel wheel_LR annotation(
@@ -59,19 +59,19 @@ Modelica.Mechanics.MultiBody.Parts.Body body(m = 100, r_0(start = {0, 0, 0.309})
       Placement(visible = true, transformation(origin = {68, -42}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   equation
   connect(macPherson.frame_Wheel_L, wheel_LF.carrierFrame) annotation(
-      Line(points = {{-10, 80}, {-33, 80}, {-33, 78}, {-56, 78}}, color = {95, 95, 95}));
+      Line(points = {{-10, 80}, {-52, 80}}, color = {95, 95, 95}));
   connect(macPherson.frame_Wheel_R, wheel_RF.carrierFrame) annotation(
       Line(points = {{10, 80}, {50, 80}}, color = {95, 95, 95}));
   connect(macPherson.frame_C, body.frame_a) annotation(
-      Line(points = {{0, 68.2}, {0, 46.2}}, color = {95, 95, 95}));
+      Line(points = {{0, 68.2}, {0, 46}}, color = {95, 95, 95}));
   connect(body.frame_a, leftRear.frame_a) annotation(
-      Line(points = {{0, 46}, {-20, 46}, {-20, 0}, {-20, 0}}, color = {95, 95, 95}));
+      Line(points = {{0, 46}, {-50, 46}, {-50, 0}}, color = {95, 95, 95}));
   connect(body.frame_a, rightRear.frame_a) annotation(
-      Line(points = {{0, 46}, {40, 46}, {40, 0}, {40, 0}}, color = {95, 95, 95}));
+      Line(points = {{0, 46}, {40, 46}, {40, 0}}, color = {95, 95, 95}));
   connect(leftRear.frame_b, wheel_LR.carrierFrame) annotation(
-      Line(points = {{-20, -20}, {-50, -20}, {-50, -42}, {-50, -42}}));
+      Line(points = {{-50, -20}, {-50, -42}}));
   connect(rightRear.frame_b, wheel_RR.carrierFrame) annotation(
-      Line(points = {{40, -20}, {41, -20}, {41, -28}, {40, -28}, {40, -42}, {58, -42}}));
+      Line(points = {{40, -20}, {41, -20}, {41, -28}, {42, -28}, {42, -42}, {58, -42}}));
 
 end StandardCar;
 

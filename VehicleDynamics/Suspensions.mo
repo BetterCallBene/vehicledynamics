@@ -211,13 +211,13 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
       parameter SI.Position rRod_ia[3] = {1, 0, 0};
       Modelica.Mechanics.MultiBody.Joints.Spherical jointB(animation=animation) annotation(
         Placement(visible = true, transformation(origin = {22, 0}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
-      Modelica.Mechanics.MultiBody.Joints.Universal jointA(animation=animation, n_b = cross(n1_a, rRod_ia), n_a = cross(rRod_ia, jointA.n_b)) annotation(
+      Modelica.Mechanics.MultiBody.Joints.Universal jointA(animation=animation, n_a = cross(rRod_ia, jointA.n_b), n_b = cross(n1_a, rRod_ia)) annotation(
         Placement(visible = true, transformation(origin = {-54, 0}, extent = {{10, -10}, {-10, 10}}, rotation = 180)));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation rod(animation=animation, r = rRod_ia) annotation(
         Placement(visible = true, transformation(origin = {-14, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation rotA(animation = false, r = rA) annotation(
         Placement(visible = true, transformation(origin = {-80, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Modelica.Mechanics.MultiBody.Parts.FixedTranslation rotB(animation=animation, r = -rB) annotation(
+      Modelica.Mechanics.MultiBody.Parts.FixedTranslation rotB(animation=animation, r = -rB, shapeType = "box") annotation(
         Placement(visible = true, transformation(origin = {68, 0}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
     equation
       connect(jointA.frame_b, rod.frame_a) annotation(
@@ -318,58 +318,61 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
     //replaceable ParameterSets.FiveLink fiveLinkData;
     
     //fivelink
-    VehicleDynamics.Suspensions.Components.Link link1(animation = true,rA = fiveLinkData.rCL1, rB = fiveLinkData.rUW - fiveLinkData.rUL1, rRod_ia = fiveLinkData.rUL1 - fiveLinkData.rCL1) annotation(
-      Placement(visible = true, transformation(origin = {-16, 56}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    VehicleDynamics.Suspensions.Components.CutLink link2(animation = true,rA = fiveLinkData.rCL2, rB = fiveLinkData.rUW - fiveLinkData.rUL2, rRod_ia = fiveLinkData.rUL2 - fiveLinkData.rCL2) annotation(
-      Placement(visible = true, transformation(origin = {-16, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    VehicleDynamics.Suspensions.Components.CutLink link3(animation = true,rA = fiveLinkData.rCL3, rB = fiveLinkData.rUW - fiveLinkData.rUL3, rRod_ia = fiveLinkData.rUL3 - fiveLinkData.rCL3) annotation(
-      Placement(visible = true, transformation(origin = {-16, -6}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    VehicleDynamics.Suspensions.Components.CutLink link4(animation = true,rA = fiveLinkData.rCL4, rB = fiveLinkData.rUW - fiveLinkData.rUL4, rRod_ia = fiveLinkData.rUL4 - fiveLinkData.rCL4) annotation(
-      Placement(visible = true, transformation(origin = {-18, -36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    VehicleDynamics.Suspensions.Components.CutLink link5(animation = true,rA = fiveLinkData.rCL5, rB = fiveLinkData.rUW - fiveLinkData.rUL5, rRod_ia = fiveLinkData.rUL5 - fiveLinkData.rCL5) annotation(
-      Placement(visible = true, transformation(origin = {-18, -66}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.Body U(I_11 = fiveLinkData.i11U, I_21 = fiveLinkData.i21U, I_22 = fiveLinkData.i22U, I_31 = fiveLinkData.i31U, I_32 = fiveLinkData.i32U, I_33 = fiveLinkData.i33U, animation = true, m = fiveLinkData.mU, r_CM = fiveLinkData.rCMU)  annotation(
-      Placement(visible = true, transformation(origin = {80, 72}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+    Modelica.Mechanics.MultiBody.Parts.Body U(I_11 = fiveLinkData.i11U, I_21 = fiveLinkData.i21U, I_22 = fiveLinkData.i22U, I_31 = fiveLinkData.i31U, I_32 = fiveLinkData.i32U, I_33 = fiveLinkData.i33U, animation = true, m = fiveLinkData.mU, r_CM = fiveLinkData.rCMU) annotation(
+        Placement(visible = true, transformation(origin = {80, 72}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
   replaceable parameter VehicleDynamics.Suspensions.ParameterSets.Components.FiveLink fiveLinkData annotation(
       Placement(visible = true, transformation(origin = {-74, 72}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.Link link(rA = fiveLinkData.rCL1, rB = fiveLinkData.rUW - fiveLinkData.rUL1, rRod_ia = fiveLinkData.rUL1 - fiveLinkData.rCL1) annotation(
+        Placement(visible = true, transformation(origin = {-4, 50}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.CutLink cutLink5(rA = fiveLinkData.rCL5, rB = fiveLinkData.rUW - fiveLinkData.rUL5, rRod_ia = fiveLinkData.rUL5 - fiveLinkData.rCL5) annotation(
+        Placement(visible = true, transformation(origin = {-4, -66}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.CutLink cutLink3(rA = fiveLinkData.rCL3, rB = fiveLinkData.rUW - fiveLinkData.rUL3, rRod_ia = fiveLinkData.rUL3 - fiveLinkData.rCL3) annotation(
+        Placement(visible = true, transformation(origin = {-4, -12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.CutLink cutLink2(rA = fiveLinkData.rCL4, rB = fiveLinkData.rUW - fiveLinkData.rUL4, rRod_ia = fiveLinkData.rUL4 - fiveLinkData.rCL4) annotation(
+        Placement(visible = true, transformation(origin = {-4, -42}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.CutLink cutLink1(rA = fiveLinkData.rCL2, rB = fiveLinkData.rUW - fiveLinkData.rUL2, rRod_ia = fiveLinkData.rUL2 - fiveLinkData.rCL2) annotation(
+        Placement(visible = true, transformation(origin = {-4, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   protected
   equation
-    connect(link1.frame_a, frame_C) annotation(
-      Line(points = {{-26, 56}, {-100, 0}, {-100, 0}}, color = {95, 95, 95}));
-    connect(link2.frame_a, frame_C) annotation(
-      Line(points = {{-26, 22}, {-100, 0}, {-100, 0}}, color = {95, 95, 95}));
-    connect(link3.frame_a, frame_C) annotation(
-      Line(points = {{-26, -6}, {-100, 0}, {-100, 0}}, color = {95, 95, 95}));
-    connect(link4.frame_a, frame_C) annotation(
-      Line(points = {{-28, -36}, {-100, 0}, {-100, 0}}, color = {95, 95, 95}));
-    connect(link5.frame_a, frame_C) annotation(
-      Line(points = {{-28, -66}, {-100, 0}, {-100, 0}}, color = {95, 95, 95}));
-    connect(link1.frame_b, frame_U) annotation(
-      Line(points = {{-6, 56}, {100, 0}, {100, 0}}));
-    connect(link2.frame_b, frame_U) annotation(
-      Line(points = {{-6, 22}, {100, 0}, {100, 0}}, color = {95, 95, 95}));
-    connect(link3.frame_b, frame_U) annotation(
-      Line(points = {{-6, -6}, {100, 0}, {100, 0}}));
-    connect(link4.frame_b, frame_U) annotation(
-      Line(points = {{-8, -36}, {100, 0}, {100, 0}}));
-    connect(link5.frame_b, frame_U) annotation(
-      Line(points = {{-8, -66}, {100, 0}, {100, 0}}, color = {95, 95, 95}));
     connect(U.frame_a, frame_U) annotation(
         Line(points = {{90, 72}, {100, 72}, {100, 0}, {100, 0}}, color = {95, 95, 95}));
+  connect(frame_C, link.frame_a) annotation(
+        Line(points = {{-100, 0}, {-14, 50}}));
+  connect(frame_C, cutLink1.frame_a) annotation(
+        Line(points = {{-100, 0}, {-14, 20}}));
+  connect(frame_C, cutLink3.frame_a) annotation(
+        Line(points = {{-100, 0}, {-14, -12}}));
+  connect(frame_C, cutLink2.frame_a) annotation(
+        Line(points = {{-100, 0}, {-14, -42}}));
+  connect(frame_C, cutLink5.frame_a) annotation(
+        Line(points = {{-100, 0}, {-14, -66}}));
+  connect(link.frame_b, frame_U) annotation(
+        Line(points = {{6, 50}, {100, 0}}, color = {95, 95, 95}));
+  connect(cutLink1.frame_b, frame_U) annotation(
+        Line(points = {{6, 20}, {100, 0}}, color = {95, 95, 95}));
+  connect(cutLink3.frame_b, frame_U) annotation(
+        Line(points = {{6, -12}, {100, 0}}, color = {95, 95, 95}));
+  connect(cutLink2.frame_b, frame_U) annotation(
+        Line(points = {{6, -42}, {100, 0}}, color = {95, 95, 95}));
+  connect(cutLink5.frame_b, frame_U) annotation(
+        Line(points = {{6, -66}, {100, 0}}, color = {95, 95, 95}));
     annotation(
         Documentation(info = "<html><head></head><body><br></body></html>"));
     end FiveLink;
 
     model Strut "Strut - Integrated spring-damper unit"
       extends Modelica.Mechanics.MultiBody.Interfaces.PartialTwoFrames;
-      Modelica.Mechanics.MultiBody.Parts.FixedTranslation frameTranslationA(r = strutData.rA)  annotation(
+      Modelica.Mechanics.MultiBody.Parts.FixedTranslation frameTranslationA(r = rA)  annotation(
         Placement(visible = true, transformation(origin = {-60, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslationB(animation = false, r = strutData.rB) annotation(
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslationB(animation = false, r = rB) annotation(
         Placement(visible = true, transformation(origin = {52, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Forces.SpringDamperParallel springDamperParallel(c = strutData.c, d = strutData.d, s_unstretched = strutData.s0)  annotation(
+  Modelica.Mechanics.MultiBody.Forces.SpringDamperParallel springDamperParallel(c = c, d = d, s_unstretched = s0)  annotation(
         Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  replaceable parameter ParameterSets.Components.Strut strutData(c = 10, d = 20000)  annotation(
-        Placement(visible = true, transformation(origin = {-72, 84}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      parameter Modelica.SIunits.Position rA[3] "";
+      parameter Modelica.SIunits.Position rB[3] "";
+      parameter Modelica.SIunits.DampingCoefficient d "Damping coefficient for SpringDamperParallel unit [N/(m/s)]";
+      parameter Modelica.SIunits.TranslationalSpringConstant c "Spring coefficient for SpringDamperParallel unit [N/m]";
+      parameter Modelica.SIunits.Position s0 "unstretched spring [m]";
     equation
       connect(frameTranslationA.frame_b, springDamperParallel.frame_a) annotation(
         Line(points = {{-50, 0}, {-10, 0}, {-10, 0}, {-10, 0}}));
@@ -406,5 +409,93 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
       connect(macPherson.frame_Wheel_R, wheel_RF.carrierFrame) annotation(
         Line(points = {{8, 2}, {48, 2}}, color = {95, 95, 95}));
     end MacPherson;
+
+    model FiveLink
+      import SI = Modelica.SIunits;
+      inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1}) annotation(
+        Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(r = {0, 0, 0})  annotation(
+        Placement(visible = true, transformation(origin = {-56, 28}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.Link link(rA = fiveLinkData.rCL1, rB = fiveLinkData.rUW - fiveLinkData.rUL1, rRod_ia = fiveLinkData.rUL1 - fiveLinkData.rCL1)  annotation(
+        Placement(visible = true, transformation(origin = {48, 28}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  ParameterSets.Components.FiveLink fiveLinkData(rCL1 = {0, 0, 0}, rCL2 = {0.139, 0.184, 0.196}, rCL3 = {0.181, 0.144, 0.086}, rCL4 = {-0.019, 0.064, 0.186}, rCL5 = {0.481, 0.244, -0.042}, rUL1 = {0.026, 0.436, -0.031}, rUL2 = {0.125, 0.437, 0.183}, rUL3 = {0.216, 0.381, 0.072}, rUL4 = {0.016, 0.381, 0.172}, rUL5 = {0.216, 0.381, 0.012}, rUW = {0.086, 0.506, 0.051})  annotation(
+        Placement(visible = true, transformation(origin = {-78, 86}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.Body body(m = 1)  annotation(
+        Placement(visible = true, transformation(origin = {96, 28}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation1(r = rCS) annotation(
+        Placement(visible = true, transformation(origin = {2, 68}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Forces.SpringDamperParallel springDamperParallel(c = 100, d = 1000, s_unstretched = Modelica.Math.Vectors.length(rUS - rCS) + 0.116)  annotation(
+        Placement(visible = true, transformation(origin = {32, 68}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.CutLink cutLink1(rA = fiveLinkData.rCL2, rB = fiveLinkData.rUW - fiveLinkData.rUL2, rRod_ia = fiveLinkData.rUL2 - fiveLinkData.rCL2) annotation(
+        Placement(visible = true, transformation(origin = {48, -2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.CutLink cutLink(rA = fiveLinkData.rCL3, rB = fiveLinkData.rUW - fiveLinkData.rUL3, rRod_ia = fiveLinkData.rUL3 - fiveLinkData.rCL3) annotation(
+        Placement(visible = true, transformation(origin = {48, -34}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.CutLink cutLink2(rA = fiveLinkData.rCL4, rB = fiveLinkData.rUW - fiveLinkData.rUL4, rRod_ia = fiveLinkData.rUL4 - fiveLinkData.rCL4) annotation(
+        Placement(visible = true, transformation(origin = {48, -64}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.CutLink cutLink5(rA = fiveLinkData.rCL5, rB = fiveLinkData.rUW - fiveLinkData.rUL5, rRod_ia = fiveLinkData.rUL5 - fiveLinkData.rCL5) annotation(
+        Placement(visible = true, transformation(origin = {48, -88}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  protected
+    parameter SI.Position rCS[3] = {0.031, 0.287, 0.472};
+    parameter SI.Position rUS[3] = {0.030, 0.350, -0.024};
+    equation
+      connect(world.frame_b, fixedTranslation.frame_a) annotation(
+        Line(points = {{-68, -76}, {-66, -76}, {-66, 28}}, color = {95, 95, 95}));
+      connect(fixedTranslation.frame_b, link.frame_a) annotation(
+        Line(points = {{-46, 28}, {38, 28}}, color = {95, 95, 95}));
+      connect(link.frame_b, body.frame_a) annotation(
+        Line(points = {{58, 28}, {86, 28}}, color = {95, 95, 95}));
+      connect(fixedTranslation.frame_b, fixedTranslation1.frame_a) annotation(
+        Line(points = {{-46, 28}, {-8, 28}, {-8, 68}}, color = {95, 95, 95}));
+      connect(fixedTranslation1.frame_b, springDamperParallel.frame_a) annotation(
+        Line(points = {{12, 68}, {22, 68}, {22, 68}, {22, 68}, {22, 68}}));
+      connect(springDamperParallel.frame_b, body.frame_a) annotation(
+        Line(points = {{42, 68}, {86, 68}, {86, 28}, {86, 28}}, color = {95, 95, 95}));
+      connect(cutLink1.frame_b, body.frame_a) annotation(
+        Line(points = {{58, -2}, {86, -2}, {86, 28}}, color = {95, 95, 95}));
+      connect(fixedTranslation.frame_b, cutLink1.frame_a) annotation(
+        Line(points = {{-46, 28}, {38, 28}, {38, -2}, {38, -2}}, color = {95, 95, 95}));
+      connect(fixedTranslation.frame_b, cutLink.frame_a) annotation(
+        Line(points = {{-46, 28}, {38, 28}, {38, -34}, {38, -34}}, color = {95, 95, 95}));
+      connect(fixedTranslation.frame_b, cutLink2.frame_a) annotation(
+        Line(points = {{-46, 28}, {38, 28}, {38, -64}, {38, -64}}, color = {95, 95, 95}));
+      connect(fixedTranslation.frame_b, cutLink5.frame_a) annotation(
+        Line(points = {{-46, 28}, {38, 28}, {38, -88}}, color = {95, 95, 95}));
+      connect(cutLink.frame_b, body.frame_a) annotation(
+        Line(points = {{58, -34}, {86, -34}, {86, 28}, {86, 28}}));
+      connect(cutLink5.frame_b, body.frame_a) annotation(
+        Line(points = {{58, -88}, {86, -88}, {86, 28}}, color = {95, 95, 95}));
+  connect(cutLink2.frame_b, body.frame_a) annotation(
+        Line(points = {{58, -64}, {86, -64}, {86, 28}, {86, 28}}, color = {95, 95, 95}));
+    end FiveLink;
+
+    model FiveLinkBasic
+      import SI = Modelica.SIunits;
+      inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1}) annotation(
+        Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Suspensions.Components.FiveLink fiveLink(fiveLinkData = fiveLinkData)  annotation(
+        Placement(visible = true, transformation(origin = {30, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedTranslation(r = {0, 0, 0})  annotation(
+        Placement(visible = true, transformation(origin = {-64, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.Body body(m = 2)  annotation(
+        Placement(visible = true, transformation(origin = {84, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  parameter ParameterSets.Components.FiveLink fiveLinkData(rCL1 = {0, 0, 0}, rCL2 = {0.139, 0.184, 0.196}, rCL3 = {0.181, 0.144, 0.086}, rCL4 = {-0.019, 0.064, 0.186}, rCL5 = {0.481, 0.244, -0.042}, rUL1 = {0.026, 0.436, -0.031}, rUL2 = {0.125, 0.437, 0.183}, rUL3 = {0.216, 0.381, 0.072}, rUL4 = {0.016, 0.381, 0.172}, rUL5 = {0.216, 0.381, 0.012}, rUW = {0.086, 0.506, 0.051}) annotation(
+        Placement(visible = true, transformation(origin = {-78, 86}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.Strut strut(c = 100, d = 10000, rA = rCS, rB = {0, 0, 0}, s0 = Modelica.Math.Vectors.length(rUS - rCS) + 0.116)  annotation(
+        Placement(visible = true, transformation(origin = {20, 52}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  protected
+      parameter SI.Position rCS[3] = {0.031, 0.287, 0.472};
+    parameter SI.Position rUS[3] = {0.030, 0.350, -0.024};
+    equation
+      connect(world.frame_b, fixedTranslation.frame_a) annotation(
+        Line(points = {{-68, -76}, {-74, -76}, {-74, 20}, {-74, 20}}));
+      connect(fixedTranslation.frame_b, fiveLink.frame_C) annotation(
+        Line(points = {{-54, 20}, {20, 20}}, color = {95, 95, 95}));
+      connect(fiveLink.frame_U, body.frame_a) annotation(
+        Line(points = {{40, 20}, {74, 20}, {74, 20}, {74, 20}}, color = {95, 95, 95}));
+  connect(fixedTranslation.frame_b, strut.frame_a) annotation(
+        Line(points = {{-54, 20}, {10, 20}, {10, 52}, {10, 52}}, color = {95, 95, 95}));
+  connect(strut.frame_b, body.frame_a) annotation(
+        Line(points = {{30, 52}, {74, 52}, {74, 20}, {74, 20}}, color = {95, 95, 95}));
+    end FiveLinkBasic;
   end Tests;
 end Suspensions;

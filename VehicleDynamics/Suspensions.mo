@@ -503,26 +503,26 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
       import SI = Modelica.SIunits;
       inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1}) annotation(
         Placement(visible = true, transformation(origin = {-78, -76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Suspensions.Components.FiveLink fiveLinkLR(fiveLinkData = fiveLinkData_LR)  annotation(
-        Placement(visible = true, transformation(origin = {18, 30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  VehicleDynamics.Suspensions.Components.Strut strut(c = 1, d = 5, rA = rCS, rB = {0, 0, 0}, s0 = Modelica.Math.Vectors.length(rUS - rCS) + 0.116)  annotation(
-        Placement(visible = true, transformation(origin = {18, 8}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   parameter ParameterSets.Components.FiveLink fiveLinkData_LR(rCL1 = {0, 0, 0}, rCL2 = {0.139, 0.184, 0.196}, rCL3 = {0.181, 0.144, 0.086}, rCL4 = {-0.019, 0.064, 0.186}, rCL5 = {0.481, 0.244, -0.042}, rUL1 = {0.026, 0.436, -0.031}, rUL2 = {0.125, 0.437, 0.183}, rUL3 = {0.216, 0.381, 0.072}, rUL4 = {0.016, 0.381, 0.172}, rUL5 = {0.216, 0.381, 0.012}, rUW = {0.086, 0.506, 0.051}) annotation(
         Placement(visible = true, transformation(origin = {-78, 86}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   VehicleDynamics.Suspensions.Components.FiveLink fiveLinkRR(fiveLinkData = fiveLinkData_RR) annotation(
         Placement(visible = true, transformation(origin = {18, -30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   VehicleDynamics.Suspensions.Components.Strut strut1(c = 100, d = 10000, rA = {1, -1, 1} .*rCS, rB = {0, 0, 0}, s0 = Modelica.Math.Vectors.length({1, -1, 1} .* rUS - {1, -1, 1} .* rCS) + 0.116) annotation(
         Placement(visible = true, transformation(origin = {18, -8}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedLR(animation = false, r = {-1, 1, 0})  annotation(
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedLR(animation = false, r = {-1, 1, 5})  annotation(
         Placement(visible = true, transformation(origin = {-58, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedRR(animation = false, r = {-1, -1, 0}) annotation(
+  Modelica.Mechanics.MultiBody.Parts.FixedTranslation fixedRR(animation = false, r = {-1, -1, 5}) annotation(
         Placement(visible = true, transformation(origin = {-58, -24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   parameter VehicleDynamics.Suspensions.ParameterSets.Components.FiveLink fiveLinkData_RR(rCL1 =  {1, -1, 1} .* fiveLinkData_LR.rCL1, rCL2 = {1, -1, 1} .* fiveLinkData_LR.rCL2, rCL3 = {1, -1, 1} .* fiveLinkData_LR.rCL3, rCL4 = {1, -1, 1} .* fiveLinkData_LR.rCL4, rCL5 = {1, -1, 1} .* fiveLinkData_LR.rCL5, rUL1 = {1, -1, 1} .* fiveLinkData_LR.rUL1, rUL2 = {1, -1, 1} .* fiveLinkData_LR.rUL2, rUL3 = {1, -1, 1} .* fiveLinkData_LR.rUL3, rUL4 = {1, -1, 1} .* fiveLinkData_LR.rUL4, rUL5 = {1, -1, 1} .* fiveLinkData_LR.rUL5, rUW = {1, -1, 1} .* fiveLinkData_LR.rUW) annotation(
         Placement(visible = true, transformation(origin = {-36, 86}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Wheels.RillTyre.Wheel wheel annotation(
+  Wheels.RillTyre.Wheel wheel_LR annotation(
         Placement(visible = true, transformation(origin = {68, 32}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Mechanics.MultiBody.Parts.Body body1(m = 2) annotation(
-        Placement(visible = true, transformation(origin = {70, -26}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.Strut strut(c = 100, d = 10000, rA = rCS, rB = {0, 0, 0}, s0 = Modelica.Math.Vectors.length(rUS - rCS) + 0.116) annotation(
+        Placement(visible = true, transformation(origin = {18, 8}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.FiveLink fiveLinkLR(fiveLinkData = fiveLinkData_LR) annotation(
+        Placement(visible = true, transformation(origin = {18, 30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  VehicleDynamics.Wheels.RillTyre.Wheel wheel_RR(leftWheel = false)  annotation(
+        Placement(visible = true, transformation(origin = {70, -30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   protected
       parameter SI.Position rCS[3] = {0.031, 0.287, 0.472};
     parameter SI.Position rUS[3] = {0.030, 0.350, -0.024};
@@ -531,22 +531,22 @@ package Suspensions "Suspensions, models ready to be used as front or rear suspe
         Line(points = {{-68, -76}, {-68, 22}}, color = {95, 95, 95}));
       connect(world.frame_b, fixedRR.frame_a) annotation(
         Line(points = {{-68, -76}, {-68, -24}}));
-      connect(fixedLR.frame_b, fiveLinkLR.frame_C) annotation(
-        Line(points = {{-48, 22}, {8, 30}}));
-      connect(fixedLR.frame_b, strut.frame_a) annotation(
-        Line(points = {{-48, 22}, {8, 8}}, color = {95, 95, 95}));
       connect(fixedRR.frame_b, strut1.frame_a) annotation(
         Line(points = {{-48, -24}, {8, -8}}));
       connect(fixedRR.frame_b, fiveLinkRR.frame_C) annotation(
         Line(points = {{-48, -24}, {8, -30}}, color = {95, 95, 95}));
-      connect(fiveLinkLR.frame_U, wheel.carrierFrame) annotation(
-        Line(points = {{28, 30}, {58, 30}, {58, 32}, {58, 32}}, color = {95, 95, 95}));
-      connect(strut.frame_b, wheel.carrierFrame) annotation(
+      connect(fixedLR.frame_b, strut.frame_a) annotation(
+        Line(points = {{-48, 22}, {8, 8}}, color = {95, 95, 95}));
+  connect(strut.frame_b, wheel_LR.carrierFrame) annotation(
         Line(points = {{28, 8}, {58, 8}, {58, 32}, {58, 32}}));
-      connect(fiveLinkRR.frame_U, body1.frame_a) annotation(
-        Line(points = {{28, -30}, {60, -30}, {60, -26}, {60, -26}}, color = {95, 95, 95}));
-      connect(strut1.frame_b, body1.frame_a) annotation(
-        Line(points = {{28, -8}, {60, -8}, {60, -26}, {60, -26}}));
+  connect(fiveLinkLR.frame_U, wheel_LR.carrierFrame) annotation(
+        Line(points = {{28, 30}, {58, 30}, {58, 32}, {58, 32}}, color = {95, 95, 95}));
+      connect(fixedLR.frame_b, fiveLinkLR.frame_C) annotation(
+        Line(points = {{-48, 22}, {8, 30}}));
+  connect(fiveLinkRR.frame_U, wheel_RR.carrierFrame) annotation(
+        Line(points = {{28, -30}, {60, -30}, {60, -30}, {60, -30}}, color = {95, 95, 95}));
+  connect(strut1.frame_b, wheel_RR.carrierFrame) annotation(
+        Line(points = {{28, -8}, {60, -8}, {60, -30}, {60, -30}}, color = {95, 95, 95}));
       annotation(
         Diagram);end FiveLink;
   end Tests;

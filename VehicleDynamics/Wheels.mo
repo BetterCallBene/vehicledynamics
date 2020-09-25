@@ -148,7 +148,7 @@ package Wheels "Wheel, tyre and road models"
       Placement(visible = true, transformation(origin = {-54, 40}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     Modelica.Mechanics.MultiBody.Joints.Revolute hub(n = {0, 1, 0}, useAxisFlange = true) annotation(
       Placement(visible = true, transformation(origin = {-22, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Mechanics.MultiBody.Parts.Body wheel_body(m = wheelData.m, I_11 = wheelData.Ixx, I_22 = wheelData.Iyy, I_33 = wheelData.Ixx) annotation(
+    Modelica.Mechanics.MultiBody.Parts.Body wheel_body( I_11 = wheelData.Ixx, I_22 = wheelData.Iyy, I_33 = wheelData.Ixx, animation = false,m = wheelData.m) annotation(
       Placement(visible = true, transformation(origin = {52, 2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     // Ende
   protected
@@ -503,6 +503,8 @@ package Wheels "Wheel, tyre and road models"
     model Wheel
       import SI = Modelica.SIunits;
       extends BaseWheel(redeclare ParameterSets.RillTyre.Wheel wheelData, wheel_body.animation = false, wheel_body.m = wheelData.m);
+      
+      parameter Boolean animation=true "= true, if animation shall be enabled";
       //SLIP DEFINITION
       SI.Angle slipAngle "Angle between wheel axis velocity and the x-direction of the wheel";
       Real slip "slip at contact point computed with contact velocities";
@@ -543,8 +545,6 @@ package Wheels "Wheel, tyre and road models"
       Modelica.Mechanics.MultiBody.Frames.Orientation R_rel, R;
       outer Modelica.Mechanics.MultiBody.World world;
     
-    //  Modelica.Mechanics.MultiBody.Visualizers.FixedShape Tire(extra = 1.0, height = 2 * wheelData.R0, length = abs(wheelData.width), lengthDirection = nShape, shapeType = "cylinder", width = 2 * wheelData.R0, widthDirection = {1, 0, 0}) annotation(
-    //    Placement(visible = true, transformation(origin = {52, -36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     VehicleDynamics.Wheels.RillTyre.TyreForces tyre annotation(
         Placement(visible = true, transformation(origin = {-86, 64}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape tire(
@@ -559,15 +559,8 @@ package Wheels "Wheel, tyre and road models"
     r_shape=-nShape*(cylinderLength/2),
     r = wheel_body.frame_a.r_0,
     R = R
-    );
+    ) if world.enableAnimation and animation;
     
-    Real e_x[3] = {1, 0, 0};
-      Real e_y[3] = {0, 1, 0};
-      Real e_z[3] = {0, 0, 1};
-      
-      Real debug_x[3] ;
-      Real debug_y[3] ;
-      Real debug_z[3] ;
     protected
       
       parameter Real delta_x_nom = wheelData.load1.F_slide_x / wheelData.c_x "nominal tyre deflection in x-direction";
@@ -674,9 +667,6 @@ package Wheels "Wheel, tyre and road models"
       M_z = t_z;
       R_rel = Modelica.Mechanics.MultiBody.Frames.planarRotation(nShape, phi, der(phi));
       R = Modelica.Mechanics.MultiBody.Frames.absoluteRotation(wheel_body.frame_a.R, R_rel);
-      debug_x = R.T * e_x;
-      debug_y = R.T * e_y;
-      debug_z = R.T * e_z;
       //VISUAL REPRESENTATION OF TYRE AND RIM
       annotation(
         Documentation(info = "<html><head></head><body><div>This element contains the inertia properties of a</div><div>rotating wheel and the tyre forces acting at the</div><div>contact point of the wheel with the road. The tyre forces</div><div>are computed accorded to the equations of Rill (see reference below).</div><div>The wheel parameter is defined via the parameter set Wheel and the tire</div><div>parameter is defined via the parameter set RillTyre.StandardWheel.</div><div>Therefore, it suffices to define one instance of</div><div>these records and use them for all 4 wheels of a vehicle.</div><div>The frames of this object have the following meaning:</div><div>Frame carrierFrame is fixed in the carrier of the wheel</div><div>and is located on the spin axis of the wheel in the</div><div>middle point of the wheel. This point is also approximately</div><div>used as the center-of-mass of the wheel.</div><div>It is temporarily assumed that the road lies in the</div><div>x-y plane of the inertial frame! This restriction can</div><div>be removed by defining the road properties via inner/outer</div><div>functions.</div><div>Flange driveShaft is used to drive the wheel with</div><div>a 1D-drive train.</div><div>This element is realized according to the description</div><div>&nbsp; Georg Rill: Simulation von Kraftfahrzeugen,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Vieweg, 1994</div></body></html>"));
